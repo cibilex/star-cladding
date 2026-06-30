@@ -1,0 +1,10 @@
+# Netlify build config for the static Astro (SSG) site.
+# No adapter needed — output is plain HTML/CSS/JS in dist/.
+
+[build]
+  command = "npm run build"
+  publish = "dist"
+
+[build.environment]
+  # Astro 5 requires Node >=18.20.8 / 20.3 / 22
+  NODE_VERSION = "20"
