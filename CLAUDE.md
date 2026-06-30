@@ -36,6 +36,14 @@ Stack: **Astro 5** (static/SSG) · **Tailwind CSS v4** (`@tailwindcss/vite`) · 
 No `.env` required — the site is fully static with no backend (the contact form is stubbed and
 will POST to a form service like Formspree/Web3Forms once wired).
 
+### context7
+
+> **📚 Before writing or changing code that touches any library, framework, SDK, or CLI** —
+> Astro, Tailwind v4, React 19, Motion (`motion/react`), Lenis, shadcn/ui, lucide-react,
+> `@astrojs/*`, Zod, etc. — pull current docs via the context7 MCP (`resolve-library-id` →
+> `query-docs`). Do not rely on training memory. This repo pins recent majors (Astro 5,
+> Tailwind v4, React 19) and APIs shift between them.
+
 ### Commands
 
 ```bash
