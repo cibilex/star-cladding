@@ -1,0 +1,89 @@
+---
+import Layout from "@/layouts/Layout.astro";
+import Header from "@/components/sections/Header.astro";
+import Footer from "@/components/sections/Footer.astro";
+import Contact from "@/components/sections/Contact.astro";
+import PageHero from "@/components/PageHero.astro";
+import Icon from "@/components/Icon.astro";
+import { projects } from "@/data/site";
+
+export function getStaticPaths() {
+  return projects.map((project) => ({
+    params: { slug: project.slug },
+    props: { project },
+  }));
+}
+
+const { project } = Astro.props;
+const meta = [
+  { label: "Kategori", value: project.category },
+  { label: "Konum", value: project.location },
+  { label: "Yıl", value: project.year },
+];
+---
+
+<Layout
+  title={`${project.title} | STAR ALÜMİNYUM`}
+  description={project.summary}
+>
+  <Header />
+  <main>
+    <PageHero
+      kicker={project.category}
+      title={`${project.title}, ${project.location}`}
+      crumbs={[
+        { label: "Anasayfa", href: "/" },
+        { label: "Projeler", href: "/projeler" },
+        { label: project.title },
+      ]}
+    />
+
+    <section class="px-margin-mobile py-section-gap md:px-margin-desktop">
+      <div class="mx-auto max-w-7xl">
+        <!-- main image -->
+        <div class="mb-16 h-[260px] overflow-hidden bg-surface-container md:h-[520px]">
+          {
+            project.image ? (
+              <img src={project.image} alt={project.title} class="h-full w-full object-cover" />
+            ) : (
+              <div class="flex h-full w-full items-center justify-center bg-gradient-to-br from-graphite to-steel-blue text-white/30">
+                <Icon name="building" class="size-20" />
+              </div>
+            )
+          }
+        </div>
+
+        <div class="grid grid-cols-1 gap-16 md:grid-cols-12">
+          <div class="md:col-span-8">
+            <h2 class="mb-6 text-headline text-primary">Proje Hakkında</h2>
+            <p class="text-body-lg leading-relaxed text-on-surface-variant">
+              {project.description}
+            </p>
+          </div>
+
+          <aside class="md:col-span-4">
+            <dl class="divide-y divide-outline-variant border-y border-outline-variant">
+              {
+                meta.map((m) => (
+                  <div class="flex justify-between py-4">
+                    <dt class="text-label uppercase tracking-widest text-on-surface-variant">
+                      {m.label}
+                    </dt>
+                    <dd class="font-bold text-primary">{m.value}</dd>
+                  </div>
+                ))
+              }
+            </dl>
+            <a href="/projeler" class="mt-8 inline-flex items-center gap-2 text-label font-semibold uppercase tracking-widest text-vibrant-steel-blue">
+              <Icon name="arrow-left" class="size-4" />
+              Tüm Projeler
+            </a>
+          </aside>
+        </div>
+      </div>
+    </section>
+
+    <Contact />
+  </main>
+  <Footer />
+</Layout>

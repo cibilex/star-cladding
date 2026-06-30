@@ -1,0 +1,105 @@
+---
+import { Image } from "astro:assets";
+import Icon from "@/components/Icon.astro";
+import { company, nav, social } from "@/data/site";
+import logo from "@/assets/images/logo.png";
+const year = new Date().getFullYear();
+---
+
+<footer
+  class="bg-surface-container px-margin-mobile py-section-gap md:px-margin-desktop"
+>
+  <div class="mx-auto mb-20 grid max-w-7xl grid-cols-1 gap-12 md:grid-cols-4">
+    <div class="md:col-span-2">
+      <div class="mb-6 flex items-center gap-3">
+        <Image
+          src={logo}
+          alt="Star Alüminyum logo"
+          width={64}
+          height={64}
+          class="h-8 w-8 object-contain"
+        />
+        <span class="font-display text-xl font-bold tracking-tighter text-primary">
+          {company.name}
+        </span>
+      </div>
+      <p class="mb-6 max-w-sm text-on-surface-variant">
+        Yarının siluetlerini sürdürülebilir, yüksek performanslı cephe
+        mühendisliği ile tanımlıyoruz.
+      </p>
+
+      <!-- social icon buttons -->
+      <div class="mb-8 flex items-center gap-3">
+        {
+          social.map((s) => (
+            <a
+              href={s.href}
+              target="_blank"
+              rel="noopener"
+              aria-label={s.label}
+              class="inline-flex size-10 items-center justify-center rounded-lg border border-outline-variant text-on-surface-variant transition-all duration-300 hover:scale-110 hover:border-vibrant-steel-blue hover:text-vibrant-steel-blue"
+            >
+              <Icon name={s.icon} class="size-5" />
+            </a>
+          ))
+        }
+      </div>
+
+      <p class="text-label text-outline">
+        © {year} {company.legalName}. {""}Tüm hakları saklıdır.
+      </p>
+    </div>
+
+    <div>
+      <p class="mb-6 text-label font-bold uppercase tracking-widest text-primary">
+        İletişim
+      </p>
+      <p class="mb-2 text-on-surface-variant">{company.address}</p>
+      <p class="mb-2 text-on-surface-variant">{company.phone}</p>
+      <a
+        href={`mailto:${company.email}`}
+        class="text-on-surface-variant transition-colors hover:text-vibrant-steel-blue"
+      >
+        {company.email}
+      </a>
+    </div>
+
+    <div>
+      <p class="mb-6 text-label font-bold uppercase tracking-widest text-primary">
+        Menü
+      </p>
+      <ul class="space-y-3 text-on-surface-variant">
+        {
+          nav.map((item) => (
+            <li>
+              <a
+                href={item.href}
+                class="transition-colors hover:text-vibrant-steel-blue"
+              >
+                {item.label}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </div>
+
+  <div
+    class="flex flex-col items-center justify-between gap-4 border-t border-outline-variant pt-8 md:flex-row"
+  >
+    <div class="flex gap-6">
+      <a href="#" class="text-label uppercase tracking-widest text-on-surface-variant hover:text-primary">
+        Gizlilik
+      </a>
+      <a href="#" class="text-label uppercase tracking-widest text-on-surface-variant hover:text-primary">
+        Künye
+      </a>
+    </div>
+    <div class="flex items-center gap-4">
+      <span class="text-label font-bold text-primary">TR</span>
+      <span class="h-3 w-px bg-outline-variant"></span>
+      <span class="cursor-pointer text-label text-outline hover:text-primary">EN</span>
+    </div>
+  </div>
+</footer>

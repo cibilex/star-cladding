@@ -1,0 +1,52 @@
+---
+import Layout from "@/layouts/Layout.astro";
+import Header from "@/components/sections/Header.astro";
+import Footer from "@/components/sections/Footer.astro";
+import Contact from "@/components/sections/Contact.astro";
+import PageHero from "@/components/PageHero.astro";
+import Icon from "@/components/Icon.astro";
+import { services } from "@/data/site";
+---
+
+<Layout
+  title="Hizmetlerimiz | STAR ALÜMİNYUM"
+  description="Cam ve cephe giydirme, korkuluk ve küpeşte, kompozit panel kaplama — Star Alüminyum'un uzman cephe çözümleri."
+>
+  <Header />
+  <main>
+    <PageHero
+      kicker="Uzmanlık Alanlarımız"
+      title="Hizmetlerimiz"
+      subtitle="Cam cephe, kompozit panel ve korkuluk sistemlerinde uçtan uca mühendislik ve montaj çözümleri."
+      crumbs={[{ label: "Anasayfa", href: "/" }, { label: "Hizmetler" }]}
+    />
+
+    <section class="px-margin-mobile py-section-gap md:px-margin-desktop">
+      <div class="mx-auto grid max-w-7xl grid-cols-1 gap-12 md:grid-cols-3">
+        {
+          services.map((service, i) => (
+            <a
+              href={`/hizmetler/${service.slug}`}
+              class="reveal group flex flex-col bg-surface p-10 transition-transform hover:-translate-y-1"
+              style={`transition-delay: ${i * 120}ms;`}
+            >
+              <Icon
+                name={service.icon}
+                class="mb-6 size-12 text-graphite transition-colors group-hover:text-vibrant-steel-blue"
+              />
+              <h2 class="mb-4 text-body-lg font-bold text-primary">{service.title}</h2>
+              <p class="mb-8 flex-grow text-on-surface-variant">{service.summary}</p>
+              <span class="inline-flex items-center gap-1 text-label font-semibold uppercase tracking-widest text-vibrant-steel-blue">
+                Detayları Gör
+                <Icon name="arrow-right" class="size-4" />
+              </span>
+            </a>
+          ))
+        }
+      </div>
+    </section>
+
+    <Contact />
+  </main>
+  <Footer />
+</Layout>

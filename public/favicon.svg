@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Star Alüminyum">
+  <rect width="64" height="64" rx="8" fill="#1a283b"/>
+  <!-- interlocking woven star (flat, 2-tone) -->
+  <path d="M32 9 L39.5 26 L58 28 L44 41 L48 59 L32 49 L16 59 L20 41 L6 28 L24.5 26 Z"
+        fill="none" stroke="#a0aab2" stroke-width="3.2" stroke-linejoin="round"/>
+  <path d="M32 19 L36.5 30 L48 31.5 L39.5 40 L42 52 L32 45.5 L22 52 L24.5 40 L16 31.5 L27.5 30 Z"
+        fill="#2d5a88" opacity="0.9"/>
+</svg>

@@ -1,0 +1,54 @@
+---
+interface Crumb {
+  label: string;
+  href?: string;
+}
+
+interface Props {
+  title: string;
+  subtitle?: string;
+  kicker?: string;
+  crumbs?: Crumb[];
+}
+
+const { title, subtitle, kicker, crumbs = [] } = Astro.props;
+---
+
+<!-- Navy title band. Also provides spacing under the fixed (h-20) header. -->
+<section
+  class="bg-primary px-margin-mobile pb-20 pt-40 text-primary-foreground md:px-margin-desktop"
+>
+  <div class="mx-auto max-w-7xl">
+    {
+      crumbs.length > 0 && (
+        <nav class="mb-6 flex flex-wrap items-center gap-2 text-label uppercase tracking-widest text-white/50">
+          {crumbs.map((c, i) => (
+            <>
+              {c.href ? (
+                <a href={c.href} class="transition-colors hover:text-white">
+                  {c.label}
+                </a>
+              ) : (
+                <span class="text-white/80">{c.label}</span>
+              )}
+              {i < crumbs.length - 1 && <span>/</span>}
+            </>
+          ))}
+        </nav>
+      )
+    }
+    {
+      kicker && (
+        <p class="mb-3 text-label font-semibold uppercase tracking-widest text-vibrant-steel-blue">
+          {kicker}
+        </p>
+      )
+    }
+    <h1 class="text-display-mobile font-extrabold md:text-display-lg">{title}</h1>
+    {
+      subtitle && (
+        <p class="mt-6 max-w-2xl text-body-lg text-white/80">{subtitle}</p>
+      )
+    }
+  </div>
+</section>

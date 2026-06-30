@@ -1,0 +1,28 @@
+---
+import { iconRegistry, type IconName } from "@/components/icon-registry";
+
+/**
+ * Icon for .astro files. Renders a lucide-react glyph server-side — inline
+ * SVG, 0 JS — so static sections stay framework-free (project goal #1).
+ *
+ * Size with a Tailwind `size-*` class (e.g. class="size-9"); color follows the
+ * current text color (lucide strokes with currentColor). `fill` renders a
+ * solid glyph. Decorative by default (aria-hidden) — the surrounding link /
+ * heading carries the accessible label.
+ */
+interface Props {
+  name: IconName;
+  class?: string;
+  /** render a solid glyph (fill with current color) */
+  fill?: boolean;
+}
+
+const { name, class: className, fill = false } = Astro.props;
+const Glyph = iconRegistry[name];
+---
+
+<Glyph
+  className={className}
+  aria-hidden="true"
+  {...(fill ? { fill: "currentColor" } : {})}
+/>

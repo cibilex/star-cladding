@@ -1,0 +1,61 @@
+---
+import { services, stats } from "@/data/site";
+import Icon from "@/components/Icon.astro";
+---
+
+<section id="hizmetler" class="bg-surface px-margin-mobile py-section-gap md:px-margin-desktop">
+  <div class="mx-auto max-w-7xl">
+    <div class="mb-20 flex flex-wrap items-end justify-between gap-6">
+      <div>
+        <p class="mb-2 text-label font-semibold uppercase tracking-widest text-vibrant-steel-blue">
+          Uzmanlık Alanlarımız
+        </p>
+        <h2 class="reveal text-headline text-primary">Hizmetlerimiz</h2>
+      </div>
+      <a
+        href="/hizmetler"
+        class="inline-flex items-center gap-2 border-b border-vibrant-steel-blue pb-1 text-label font-semibold uppercase tracking-widest text-vibrant-steel-blue"
+      >
+        Tüm Hizmetler
+        <Icon name="arrow-right" class="size-4" />
+      </a>
+    </div>
+
+    <div class="grid grid-cols-1 gap-16 md:grid-cols-3">
+      {
+        services.map((service, i) => (
+          <a
+            href={`/hizmetler/${service.slug}`}
+            class="reveal group block"
+            style={`transition-delay: ${i * 150}ms;`}
+          >
+            <Icon
+              name={service.icon}
+              class="mb-6 size-9 text-graphite transition-colors group-hover:text-vibrant-steel-blue"
+            />
+            <h3 class="mb-4 text-body-lg font-bold text-primary">{service.title}</h3>
+            <p class="text-on-surface-variant">{service.summary}</p>
+            <span class="mt-4 inline-flex items-center gap-1 text-label font-semibold uppercase tracking-widest text-vibrant-steel-blue opacity-0 transition-opacity group-hover:opacity-100">
+              Detaylar
+              <Icon name="arrow-right" class="size-4" />
+            </span>
+          </a>
+        ))
+      }
+    </div>
+
+    <!-- stats strip -->
+    <div class="mt-24 grid grid-cols-3 gap-8 border-t border-outline-variant pt-12">
+      {
+        stats.map((s) => (
+          <div class="reveal text-center md:text-left">
+            <p class="text-display-mobile font-extrabold text-primary">{s.value}</p>
+            <p class="text-label uppercase tracking-widest text-on-surface-variant">
+              {s.label}
+            </p>
+          </div>
+        ))
+      }
+    </div>
+  </div>
+</section>

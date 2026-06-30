@@ -1,0 +1,65 @@
+---
+import { company } from "@/data/site";
+
+interface Props {
+  title: string;
+  description: string;
+  image?: string;
+}
+
+const { title, description, image = "/images/og.jpg" } = Astro.props;
+const canonical = new URL(Astro.url.pathname, Astro.site ?? Astro.url).href;
+const ogImage = new URL(image, Astro.site ?? Astro.url).href;
+
+// LocalBusiness structured data — drives Google local pack / Maps.
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "GeneralContractor",
+  name: company.legalName,
+  image: ogImage,
+  "@id": company.domain,
+  url: company.domain,
+  telephone: company.phone,
+  email: company.email,
+  address: {
+    "@type": "PostalAddress",
+    streetAddress: company.addressLong,
+    addressLocality: company.addressLocality,
+    addressRegion: company.addressRegion,
+    postalCode: company.postalCode,
+    addressCountry: "TR",
+  },
+  geo: {
+    "@type": "GeoCoordinates",
+    latitude: company.geo.lat,
+    longitude: company.geo.lng,
+  },
+  hasMap: company.mapsLink,
+  areaServed: "TR",
+  description,
+};
+---
+
+<!-- Primary -->
+<title>{title}</title>
+<meta name="description" content={description} />
+<link rel="canonical" href={canonical} />
+
+<!-- Open Graph -->
+<meta property="og:type" content="website" />
+<meta property="og:title" content={title} />
+<meta property="og:description" content={description} />
+<meta property="og:url" content={canonical} />
+<meta property="og:image" content={ogImage} />
+<meta property="og:locale" content="tr_TR" />
+
+<!-- Twitter -->
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content={title} />
+<meta name="twitter:description" content={description} />
+<meta name="twitter:image" content={ogImage} />
+
+<script
+  type="application/ld+json"
+  set:html={JSON.stringify(jsonLd)}
+/>

@@ -1,0 +1,80 @@
+---
+import { Image } from "astro:assets";
+import Icon from "@/components/Icon.astro";
+import heroBg from "@/assets/images/hero-building.png";
+---
+
+<!--
+  Cinematic hero (Vibrant Blue). Optimized building photo (astro:assets) with a
+  navy base layer + steel-blue gradient overlay. Source image is a low-res
+  placeholder (512²) — swap for a real hi-res facade photo before launch.
+-->
+<section
+  class="relative flex h-screen w-full items-center justify-center overflow-hidden"
+  style="background-image: linear-gradient(135deg, #1a283b 0%, #303e52 45%, #4a6a8a 100%);"
+>
+  <!-- optimized background photo -->
+  <Image
+    src={heroBg}
+    alt="Modern alüminyum cephe kaplamalı gökdelen"
+    class="absolute inset-0 h-full w-full object-cover [filter:contrast(115%)_saturate(110%)]"
+    loading="eager"
+    fetchpriority="high"
+    sizes="100vw"
+  />
+
+  <!-- steel-blue gradient overlay -->
+  <div
+    class="absolute inset-0 bg-gradient-to-t from-black/80 via-vibrant-steel-blue/40 to-vibrant-steel-blue/50 mix-blend-multiply"
+  >
+  </div>
+
+  <div
+    class="relative z-10 flex max-w-4xl flex-col items-center px-margin-mobile text-center"
+  >
+    <h1
+      class="reveal headline-glow mb-6 text-display-mobile font-extrabold text-white md:text-display-lg"
+    >
+      <span class="shimmer-text">Binanıza Modern Bir Kimlik</span>
+    </h1>
+    <p
+      class="reveal mb-12 max-w-2xl text-body-lg text-white/90 drop-shadow-md"
+      style="transition-delay: 200ms;"
+    >
+      Cam cephe, kompozit panel ve korkuluk sistemlerinde uzman çözümler ile
+      mimari vizyonunuzu gerçeğe dönüştürüyoruz.
+    </p>
+    <div
+      class="reveal flex flex-col gap-6 md:flex-row"
+      style="transition-delay: 400ms;"
+    >
+      <!-- single CTA: animated ring, glass fill -->
+      <a
+        href="#hizmetler"
+        class="group relative inline-flex h-12 overflow-hidden rounded-full p-px focus:outline-none focus-visible:ring-2 focus-visible:ring-white/70"
+      >
+        <span
+          class="absolute inset-[-1000%] animate-[spin_3s_linear_infinite] bg-[conic-gradient(from_90deg_at_50%_50%,rgba(255,255,255,0.08)_0%,rgba(255,255,255,0.7)_50%,rgba(255,255,255,0.08)_100%)]"
+        ></span>
+        <span
+          class="relative inline-flex h-full w-full items-center justify-center gap-2 rounded-full bg-primary/70 px-8 text-label font-semibold uppercase tracking-widest text-white backdrop-blur-md transition-transform group-hover:scale-[1.03]"
+        >
+          HİZMETLERİMİZ
+          <Icon
+            name="arrow-right"
+            class="size-4 transition-transform group-hover:translate-x-1"
+          />
+        </span>
+      </a>
+    </div>
+  </div>
+
+  <!-- scroll cue -->
+  <a
+    href="#hizmetler"
+    class="absolute bottom-10 left-1/2 flex -translate-x-1/2 animate-bounce flex-col items-center text-white/60"
+  >
+    <span class="mb-2 text-label tracking-widest">KEŞFET</span>
+    <Icon name="chevron-down" class="size-6" />
+  </a>
+</section>

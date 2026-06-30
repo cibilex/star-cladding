@@ -1,0 +1,59 @@
+---
+import ContactForm from "@/components/react/ContactForm";
+import Icon from "@/components/Icon.astro";
+import { company } from "@/data/site";
+import type { IconName } from "@/components/icon-registry";
+
+const contactItems: { icon: IconName; label: string; value: string; href?: string }[] = [
+  { icon: "map-pin", label: "ADRES", value: company.address },
+  { icon: "phone", label: "TELEFON", value: company.phone, href: company.phoneHref },
+  { icon: "mail", label: "E-POSTA", value: company.email, href: `mailto:${company.email}` },
+  { icon: "clock", label: "ÇALIŞMA SAATLERİ", value: company.hours },
+];
+---
+
+<section id="iletisim" class="relative overflow-hidden bg-primary py-section-gap text-primary-foreground">
+  <div
+    class="relative z-10 mx-auto grid max-w-7xl grid-cols-1 gap-20 px-margin-mobile md:grid-cols-2 md:px-margin-desktop"
+  >
+    <div>
+      <h2 class="mb-12 text-display-mobile font-bold md:text-display-lg">
+        Hadi, <span class="text-vibrant-steel-blue">kalıcı</span> bir şeyler inşa
+        edelim.
+      </h2>
+
+      <div class="space-y-8">
+        {
+          contactItems.map((item) => (
+            <div class="flex items-start gap-4">
+              <Icon name={item.icon} class="size-6 shrink-0 text-vibrant-steel-blue" />
+              <div>
+                <p class="mb-1 text-label text-white/60">{item.label}</p>
+                {item.href ? (
+                  <a href={item.href} class="text-body-lg hover:text-vibrant-steel-blue">
+                    {item.value}
+                  </a>
+                ) : (
+                  <p class="text-body-lg">{item.value}</p>
+                )}
+              </div>
+            </div>
+          ))
+        }
+
+        <a
+          href={company.whatsapp}
+          target="_blank"
+          rel="noopener"
+          class="inline-flex items-center gap-2 bg-vibrant-steel-blue px-6 py-3 text-label font-bold uppercase tracking-widest text-white transition-transform hover:-translate-y-0.5"
+        >
+          <Icon name="message-circle" class="size-5" />
+          WhatsApp'tan Yaz
+        </a>
+      </div>
+    </div>
+
+    <!-- shadcn form island -->
+    <ContactForm client:visible />
+  </div>
+</section>

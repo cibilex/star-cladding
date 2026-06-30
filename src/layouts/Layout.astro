@@ -1,0 +1,97 @@
+---
+import "@/styles/global.css";
+import SEO from "@/components/SEO.astro";
+
+interface Props {
+  title?: string;
+  description?: string;
+  lang?: string;
+}
+
+const {
+  title = "STAR ALÜMİNYUM | Binanıza Modern Bir Kimlik",
+  description = "Cam cephe, kompozit panel ve korkuluk sistemlerinde uzman alüminyum cephe giydirme çözümleri. İstanbul merkezli, milimetrik hassasiyetle montaj.",
+  lang = "tr",
+} = Astro.props;
+---
+
+<!doctype html>
+<html lang={lang} class="scroll-smooth">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="generator" content={Astro.generator} />
+
+    <!-- Fonts: Manrope (display) + Inter (body). Icons are inline lucide SVG. -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Manrope:wght@600;700;800&display=swap"
+      rel="stylesheet"
+    />
+
+    <SEO title={title} description={description} />
+  </head>
+  <body>
+    <slot />
+
+    <!-- Smooth scroll (Lenis) + scroll-reveal observer. Tiny, no framework. -->
+    <script>
+      import Lenis from "lenis";
+
+      const reduce = window.matchMedia(
+        "(prefers-reduced-motion: reduce)",
+      ).matches;
+
+      if (!reduce) {
+        const lenis = new Lenis({ duration: 1.1, smoothWheel: true });
+        function raf(time: number) {
+          lenis.raf(time);
+          requestAnimationFrame(raf);
+        }
+        requestAnimationFrame(raf);
+
+        // anchor links -> smooth scroll via Lenis
+        document.querySelectorAll('a[href^="#"]').forEach((a) => {
+          a.addEventListener("click", (e) => {
+            const id = a.getAttribute("href");
+            if (id && id.length > 1) {
+              const el = document.querySelector(id);
+              if (el) {
+                e.preventDefault();
+                lenis.scrollTo(el as HTMLElement, { offset: -110 });
+              }
+            }
+          });
+        });
+      }
+
+      // Scroll reveal
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              entry.target.classList.add("active");
+              observer.unobserve(entry.target);
+            }
+          });
+        },
+        { threshold: 0.1 },
+      );
+      document.querySelectorAll(".reveal").forEach((el) => observer.observe(el));
+
+      // Transparent header -> frosted on scroll past the hero
+      const navEl = document.getElementById("main-nav");
+      if (navEl) {
+        const onScroll = () => {
+          const scrolled = window.scrollY > 50;
+          navEl.classList.toggle("is-scrolled", scrolled);
+          navEl.classList.toggle("shadow-sm", scrolled);
+        };
+        onScroll();
+        window.addEventListener("scroll", onScroll, { passive: true });
+      }
+    </script>
+  </body>
+</html>
