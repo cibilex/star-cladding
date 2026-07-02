@@ -1,0 +1,142 @@
+---
+import { getImage } from "astro:assets";
+import Icon from "@/components/Icon.astro";
+import { stats } from "@/data/site";
+import heroDesktopSrc from "@/assets/images/hero-facade.jpg";
+import heroMobileSrc from "@/assets/images/hero-building.png";
+
+// Art-directed background: dark tower on phones, bright facade on desktop.
+// <picture> media sources so each device only downloads its own image.
+const heroDesktop = await getImage({ src: heroDesktopSrc, format: "webp", width: 1920 });
+const heroMobile = await getImage({ src: heroMobileSrc, format: "webp", width: 828 });
+
+// Meteor shower: positions/timings randomized once at build time (site is SSG),
+// rendered as plain spans + CSS keyframes — no JS island needed.
+const meteors = Array.from({ length: 4 }, (_, i) => ({
+  top: `${Math.round(Math.random() * 55)}%`,
+  left: `${(i * (100 / 4) + Math.random() * 10 - 5).toFixed(1)}%`,
+  delay: `${(Math.random() * 5).toFixed(2)}s`,
+  duration: `${(Math.random() * 6 + 4).toFixed(2)}s`,
+}));
+---
+
+<!--
+  Light hero variant (vibrant / airy). Aluminum-white surface with soft steel-blue
+  aurora glows, a faint architectural grid and a CSS meteor shower; centered copy,
+  no photo. Pair with <Header variant="light" /> so the fixed header renders
+  dark-on-light before scroll.
+-->
+<section class="relative flex min-h-svh w-full items-center overflow-hidden bg-surface">
+  <!-- ambient background: washed building photo + aurora glows + grid + meteors -->
+  <div class="pointer-events-none absolute inset-0" aria-hidden="true">
+    <picture>
+      <source media="(min-width: 768px)" srcset={heroDesktop.src} />
+      <img
+        src={heroMobile.src}
+        alt=""
+        class="absolute inset-0 h-full w-full object-cover md:translate-x-[10%]"
+        loading="eager"
+        fetchpriority="high"
+      />
+    </picture>
+    <!-- light wash: vertical on mobile; on desktop fades left->right so the
+         facade shows on the right while text stays readable on the left -->
+    <div
+      class="absolute inset-0 bg-gradient-to-b from-surface/90 via-surface/70 to-surface/95 md:bg-gradient-to-r md:from-surface md:via-surface/80 md:to-surface/30"
+    >
+    </div>
+    <div class="absolute -right-24 -top-32 h-[480px] w-[480px] rounded-full bg-vibrant-steel-blue/15 blur-3xl"></div>
+    <div class="absolute -left-40 top-1/3 h-[420px] w-[420px] rounded-full bg-steel-blue/10 blur-3xl"></div>
+    <div class="absolute -bottom-24 right-1/4 h-72 w-72 rounded-full bg-aluminum-silver/25 blur-3xl"></div>
+    <div
+      class="absolute inset-0"
+      style="background-image: linear-gradient(to right, rgba(26,40,59,0.045) 1px, transparent 1px), linear-gradient(to bottom, rgba(26,40,59,0.045) 1px, transparent 1px); background-size: 56px 56px; mask-image: radial-gradient(ellipse at center, black 40%, transparent 80%);"
+    >
+    </div>
+    {
+      meteors.map((m) => (
+        <span
+          class="meteor"
+          style={`top:${m.top};left:${m.left};animation-delay:${m.delay};animation-duration:${m.duration};`}
+        />
+      ))
+    }
+  </div>
+
+  <div
+    class="relative z-10 mx-auto flex w-full max-w-7xl flex-col items-center px-margin-mobile pb-24 pt-40 text-center md:items-start md:px-margin-desktop md:pb-28 md:pt-44 md:text-left"
+  >
+    <span class="reveal mb-6 inline-flex items-center gap-4">
+      <span class="h-px w-12 bg-vibrant-steel-blue" aria-hidden="true"></span>
+      <span class="text-label uppercase tracking-[0.25em] text-on-surface-variant">
+        Alüminyum Cephe Sistemleri
+      </span>
+      <span class="h-px w-12 bg-vibrant-steel-blue" aria-hidden="true"></span>
+    </span>
+
+    <h1
+      class="reveal mb-6 max-w-2xl text-display-mobile font-extrabold text-primary md:text-display-lg"
+      style="transition-delay: 100ms;"
+    >
+      Binanıza <span class="text-gradient-steel">Modern Bir Kimlik</span>
+    </h1>
+
+    <p
+      class="reveal mb-14 max-w-2xl text-body-lg text-on-surface-variant"
+      style="transition-delay: 200ms;"
+    >
+      Cam cephe, kompozit panel ve korkuluk sistemlerinde uzman çözümler ile
+      mimari vizyonunuzu gerçeğe dönüştürüyoruz.
+    </p>
+
+    <div class="reveal" style="transition-delay: 300ms;">
+      <!-- animated ring border (same pattern as the old hero CTA) -->
+      <a
+        href="#hizmetler"
+        class="group relative inline-flex h-12 overflow-hidden rounded-full p-[1.5px] shadow-lg shadow-vibrant-steel-blue/30 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+      >
+        <span
+          class="absolute inset-[-1000%] animate-[spin_3s_linear_infinite] bg-[conic-gradient(from_90deg_at_50%_50%,rgba(45,90,136,0.15)_35%,rgba(26,40,59,0.75)_50%,rgba(45,90,136,0.15)_65%)]"
+        ></span>
+        <span
+          class="relative inline-flex h-full w-full items-center justify-center gap-2 rounded-full bg-vibrant-steel-blue px-8 text-label font-semibold uppercase tracking-widest text-white transition-transform group-hover:scale-[1.03]"
+        >
+          HİZMETLERİMİZ
+          <Icon
+            name="arrow-right"
+            class="size-4 transition-transform group-hover:translate-x-1"
+          />
+        </span>
+      </a>
+    </div>
+
+    <!-- trust stats -->
+    <dl
+      class="reveal mt-10 grid w-full max-w-2xl grid-cols-2 justify-around gap-6 border-t border-outline-variant/60 pt-8 text-center sm:grid-cols-3 md:mt-16 md:pt-10"
+      style="transition-delay: 400ms;"
+    >
+      {
+        stats.map((stat, i) => (
+          <div class={i >= 2 ? "hidden sm:block" : undefined}>
+            <dt class="sr-only">{stat.label}</dt>
+            <dd class="font-display text-headline font-extrabold text-primary">
+              {stat.value}
+            </dd>
+            <dd class="mt-1 text-label uppercase tracking-widest text-on-surface-variant">
+              {stat.label}
+            </dd>
+          </div>
+        ))
+      }
+    </dl>
+  </div>
+
+  <!-- scroll cue -->
+  <a
+    href="#hizmetler"
+    class="absolute bottom-8 left-1/2 hidden -translate-x-1/2 animate-bounce flex-col items-center text-vibrant-steel-blue/70 md:flex"
+  >
+    <span class="mb-2 text-label tracking-widest">KEŞFET</span>
+    <Icon name="chevron-down" class="size-6" />
+  </a>
+</section>
