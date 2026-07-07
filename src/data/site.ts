@@ -12,6 +12,9 @@ export const company = {
   phone: "+90 540 098 19 99",
   phoneHref: "tel:+905400981999",
   whatsapp: "https://wa.me/905400981999",
+  // placeholder handle — replace with the real profile URL
+  instagram: "https://www.instagram.com/staraluminyum",
+  instagramHandle: "@staraluminyum",
   address: "100. Yıl, Tamirci Sk. No:1/D, Süleymanpaşa/Tekirdağ",
   addressLong:
     "100. Yıl Mah. Tamirci Sk. Sanayi Sitesi No:1/D, 59100 Süleymanpaşa/Tekirdağ, Türkiye",
@@ -19,6 +22,9 @@ export const company = {
   addressRegion: "Tekirdağ",
   postalCode: "59100",
   mapsLink: "https://maps.app.goo.gl/kSP91jJK3CVCvnPg8",
+  // keyless Google Maps embed (iframe src) — coordinates match `geo` below
+  mapsEmbed:
+    "https://www.google.com/maps?q=40.9737478,27.4872465&z=16&hl=tr&output=embed",
   hours: "Pazartesi – Cumartesi, 08:30 – 18:00",
   // for LocalBusiness JSON-LD
   geo: { lat: 40.9737478, lng: 27.4872465 },
@@ -31,9 +37,9 @@ export const nav = [
   { label: "İletişim", href: "/#iletisim" },
 ] as const;
 
-// Social profiles — replace the "#" hrefs with the real profile URLs.
+// Social profiles — hrefs come from `company` (placeholder until the real profile URL is set).
 export const social: { label: string; href: string; icon: IconName }[] = [
-  { label: "Instagram", href: "#", icon: "instagram" },
+  { label: "Instagram", href: company.instagram, icon: "instagram" },
 ];
 
 export interface Service {
