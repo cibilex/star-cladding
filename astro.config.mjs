@@ -16,7 +16,11 @@ export default defineConfig({
       prefixDefaultLocale: false,
     },
   },
-  integrations: [react(), sitemap()],
+  integrations: [
+    react(),
+    // /onizleme/* are dev-only variant preview pages — keep them out of the sitemap
+    sitemap({ filter: (page) => !page.includes("/onizleme/") }),
+  ],
   vite: {
     plugins: [tailwindcss()],
   },

@@ -6,17 +6,22 @@ interface Props {
   title?: string;
   description?: string;
   lang?: string;
+  /** dev/preview pages: emit robots noindex and skip JSON-LD */
+  noindex?: boolean;
 }
 
 const {
   title = "STAR ALÜMİNYUM | Binanıza Modern Bir Kimlik",
   description = "Cam cephe, kompozit panel ve korkuluk sistemlerinde uzman alüminyum cephe giydirme çözümleri. İstanbul merkezli, milimetrik hassasiyetle montaj.",
   lang = "tr",
+  noindex = false,
 } = Astro.props;
 ---
 
 <!doctype html>
-<html lang={lang} class="scroll-smooth">
+<!-- No `scroll-smooth` here: CSS scroll-behavior fights Lenis (both animate the
+     same scroll position), causing stutter and white overscroll flashes. -->
+<html lang={lang}>
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -31,7 +36,7 @@ const {
       rel="stylesheet"
     />
 
-    <SEO title={title} description={description} />
+    <SEO title={title} description={description} noindex={noindex} />
   </head>
   <body>
     <slot />

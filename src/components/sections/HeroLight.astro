@@ -7,8 +7,17 @@ import heroMobileSrc from "@/assets/images/hero-building.png";
 
 // Art-directed background: dark tower on phones, bright facade on desktop.
 // <picture> media sources so each device only downloads its own image.
-const heroDesktop = await getImage({ src: heroDesktopSrc, format: "webp", width: 1920 });
-const heroMobile = await getImage({ src: heroMobileSrc, format: "webp", width: 828 });
+// Animated via a CSS-only Ken Burns zoom on the wrapper (see .hero-slide).
+const heroDesktop = await getImage({
+  src: heroDesktopSrc,
+  format: "webp",
+  width: 1920,
+});
+const heroMobile = await getImage({
+  src: heroMobileSrc,
+  format: "webp",
+  width: 828,
+});
 
 // Meteor shower: positions/timings randomized once at build time (site is SSG),
 // rendered as plain spans + CSS keyframes — no JS island needed.
@@ -16,7 +25,7 @@ const meteors = Array.from({ length: 4 }, (_, i) => ({
   top: `${Math.round(Math.random() * 55)}%`,
   left: `${(i * (100 / 4) + Math.random() * 10 - 5).toFixed(1)}%`,
   delay: `${(Math.random() * 5).toFixed(2)}s`,
-  duration: `${(Math.random() * 6 + 4).toFixed(2)}s`,
+  duration: `${(Math.random() * 5 + 4).toFixed(2)}s`,
 }));
 ---
 
@@ -26,31 +35,69 @@ const meteors = Array.from({ length: 4 }, (_, i) => ({
   no photo. Pair with <Header variant="light" /> so the fixed header renders
   dark-on-light before scroll.
 -->
-<section class="relative flex min-h-svh w-full items-center overflow-hidden bg-surface">
+<section
+  class="relative flex min-h-svh w-full items-center overflow-hidden bg-surface"
+>
   <!-- ambient background: washed building photo + aurora glows + grid + meteors -->
   <div class="pointer-events-none absolute inset-0" aria-hidden="true">
-    <picture>
-      <source media="(min-width: 768px)" srcset={heroDesktop.src} />
-      <img
-        src={heroMobile.src}
-        alt=""
-        class="absolute inset-0 h-full w-full object-cover md:translate-x-[10%]"
-        loading="eager"
-        fetchpriority="high"
-      />
-    </picture>
+    <!-- NOTE: no translate-x on the img — shifting it out of its box leaves an
+         uncovered strip that shows through as a white band while the zoom runs.
+         Desktop framing shifts right by OVERSIZING the box (120% wide, anchored
+         left) so the photo center lands right of screen center with no gap. -->
+    <div class="hero-slide absolute inset-0">
+      <picture>
+        <source media="(min-width: 768px)" srcset={heroDesktop.src} />
+        <img
+          src={heroMobile.src}
+          alt=""
+          class="absolute inset-0 h-full w-full object-cover md:w-[120%] md:max-w-none"
+          loading="eager"
+          fetchpriority="high"
+        />
+      </picture>
+    </div>
     <!-- light wash: vertical on mobile; on desktop fades left->right so the
          facade shows on the right while text stays readable on the left -->
     <div
       class="absolute inset-0 bg-gradient-to-b from-surface/90 via-surface/70 to-surface/95 md:bg-gradient-to-r md:from-surface md:via-surface/80 md:to-surface/30"
     >
     </div>
-    <div class="absolute -right-24 -top-32 h-[480px] w-[480px] rounded-full bg-vibrant-steel-blue/15 blur-3xl"></div>
-    <div class="absolute -left-40 top-1/3 h-[420px] w-[420px] rounded-full bg-steel-blue/10 blur-3xl"></div>
-    <div class="absolute -bottom-24 right-1/4 h-72 w-72 rounded-full bg-aluminum-silver/25 blur-3xl"></div>
+    <div
+      class="absolute -right-24 -top-32 h-[480px] w-[480px] rounded-full bg-vibrant-steel-blue/15 blur-3xl"
+    >
+    </div>
+    <div
+      class="absolute -left-40 top-1/3 h-[420px] w-[420px] rounded-full bg-steel-blue/10 blur-3xl"
+    >
+    </div>
+    <div
+      class="absolute -bottom-24 right-1/4 h-72 w-72 rounded-full bg-aluminum-silver/25 blur-3xl"
+    >
+    </div>
     <div
       class="absolute inset-0"
       style="background-image: linear-gradient(to right, rgba(26,40,59,0.045) 1px, transparent 1px), linear-gradient(to bottom, rgba(26,40,59,0.045) 1px, transparent 1px); background-size: 56px 56px; mask-image: radial-gradient(ellipse at center, black 40%, transparent 80%);"
+    >
+    </div>
+    <!-- edge mist (drifting fog, see .hero-mist) -->
+    <div
+      class="hero-mist absolute -bottom-16 -left-24 h-64 w-[70%] rounded-full bg-surface/80 blur-3xl md:w-[45%]"
+    >
+    </div>
+    <!-- small dense mist puff pinned to the bottom-left corner -->
+    <div
+      class="hero-mist absolute -bottom-10 -left-10 h-40 w-72 rounded-full bg-white/70 blur-2xl"
+      style="animation-delay: -9s;"
+    >
+    </div>
+    <div
+      class="hero-mist absolute -right-28 top-16 h-56 w-[55%] rounded-full bg-white/60 blur-3xl md:w-[35%]"
+      style="animation-delay: -6s;"
+    >
+    </div>
+    <div
+      class="hero-mist absolute -top-20 left-1/4 h-48 w-[50%] rounded-full bg-aluminum-silver/40 blur-3xl md:w-[30%]"
+      style="animation-delay: -3s;"
     >
     </div>
     {
@@ -68,7 +115,9 @@ const meteors = Array.from({ length: 4 }, (_, i) => ({
   >
     <span class="reveal mb-6 inline-flex items-center gap-4">
       <span class="h-px w-12 bg-vibrant-steel-blue" aria-hidden="true"></span>
-      <span class="text-label uppercase tracking-[0.25em] text-on-surface-variant">
+      <span
+        class="text-label uppercase tracking-[0.25em] text-on-surface-variant"
+      >
         Alüminyum Cephe Sistemleri
       </span>
       <span class="h-px w-12 bg-vibrant-steel-blue" aria-hidden="true"></span>
@@ -140,3 +189,43 @@ const meteors = Array.from({ length: 4 }, (_, i) => ({
     <Icon name="chevron-down" class="size-6" />
   </a>
 </section>
+
+<style>
+  /* Ken Burns: slow in-out zoom on the background photo. Base scale is 1.02,
+     not 1 — at exactly 1 subpixel rounding can expose a 1px gap at the edges. */
+  .hero-slide {
+    animation: hero-kenburns 10s ease-in-out infinite alternate;
+  }
+
+  @keyframes hero-kenburns {
+    from {
+      transform: scale(1.02);
+    }
+    to {
+      transform: scale(1.12);
+    }
+  }
+
+  /* Edge mist: soft fog blobs drifting slowly along the frame edges. */
+  .hero-mist {
+    animation: hero-mist-drift 12s ease-in-out infinite alternate;
+  }
+
+  @keyframes hero-mist-drift {
+    from {
+      transform: translate3d(-3%, 0, 0) scale(1);
+      opacity: 0.7;
+    }
+    to {
+      transform: translate3d(3%, -2%, 0) scale(1.1);
+      opacity: 1;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .hero-slide,
+    .hero-mist {
+      animation: none;
+    }
+  }
+</style>

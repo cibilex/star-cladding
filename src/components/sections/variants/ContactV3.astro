@@ -1,0 +1,136 @@
+---
+import ContactForm from "@/components/react/ContactForm";
+import Icon from "@/components/Icon.astro";
+import { company } from "@/data/site";
+
+/**
+ * Contact V3 — "Conversion Strip" (CSS + native <details>, 0 extra JS).
+ * Minimal high-contrast navy band built for one job: get the call. A huge
+ * "Teklif Alın." display headline, a giant tappable tel: phone number and a
+ * WhatsApp button are the primary actions; the ContactForm hides behind a
+ * styled native <details> ("veya formu doldurun") with a rotating chevron.
+ * Mobile-first by nature — everything is stacked and thumb-sized.
+ */
+interface Props {
+  sectionId?: string;
+}
+const { sectionId = "iletisim" } = Astro.props;
+---
+
+<section id={sectionId} class="relative overflow-hidden bg-primary py-section-gap text-white">
+  <!-- ambient: single steel glow + top/bottom hairlines for the "strip" feel -->
+  <div class="pointer-events-none absolute inset-0" aria-hidden="true">
+    <div
+      class="absolute left-1/2 top-0 h-px w-2/3 -translate-x-1/2 bg-gradient-to-r from-transparent via-vibrant-steel-blue/60 to-transparent"
+    >
+    </div>
+    <div
+      class="absolute left-1/2 top-1/2 h-[420px] w-[720px] max-w-full -translate-x-1/2 -translate-y-1/2 rounded-full bg-vibrant-steel-blue/15 blur-3xl"
+    >
+    </div>
+  </div>
+
+  <div class="relative z-10 mx-auto flex max-w-4xl flex-col items-center px-margin-mobile text-center md:px-margin-desktop">
+    <span class="reveal mb-6 text-label uppercase tracking-[0.25em] text-aluminum-silver">
+      Ücretsiz Keşif &amp; Teklif
+    </span>
+
+    <h2
+      class="reveal mb-10 text-display-mobile font-extrabold md:text-display-lg"
+      style="transition-delay: 100ms;"
+    >
+      Teklif <span class="shimmer-text">Alın.</span>
+    </h2>
+
+    <!-- primary action 1: giant tappable phone number -->
+    <a
+      href={company.phoneHref}
+      class="reveal headline-glow group inline-flex min-h-[56px] items-center gap-3 py-2 font-display text-display-mobile font-extrabold tracking-tight text-white transition-colors hover:text-aluminum-silver md:gap-4 md:text-display-lg"
+      style="transition-delay: 200ms;"
+    >
+      <Icon
+        name="phone"
+        class="size-7 shrink-0 text-vibrant-steel-blue transition-transform group-hover:-rotate-12 md:size-9"
+      />
+      <span class="whitespace-nowrap">{company.phone}</span>
+    </a>
+
+    <p class="reveal mt-3 text-label uppercase tracking-widest text-white/50" style="transition-delay: 250ms;">
+      {company.hours}
+    </p>
+
+    <!-- primary action 2: whatsapp -->
+    <a
+      href={company.whatsapp}
+      target="_blank"
+      rel="noopener"
+      class="reveal shimmer-btn mt-10 inline-flex min-h-[56px] items-center gap-3 rounded-full bg-vibrant-steel-blue px-10 py-4 text-label font-bold uppercase tracking-widest text-white shadow-lg shadow-vibrant-steel-blue/30 transition-transform hover:-translate-y-0.5"
+      style="transition-delay: 300ms;"
+    >
+      <Icon name="message-circle" class="size-5" />
+      WhatsApp'tan Yaz
+      <Icon name="arrow-up-right" class="size-4" />
+    </a>
+
+    <!-- secondary: form behind a native <details> — 0 extra JS -->
+    <details class="reveal mt-14 w-full max-w-2xl" style="transition-delay: 400ms;">
+      <summary
+        class="group mx-auto flex min-h-[48px] w-fit cursor-pointer select-none items-center justify-center gap-2.5 rounded-full border border-white/15 px-6 py-3 text-label font-semibold uppercase tracking-widest text-white/70 transition-colors hover:border-vibrant-steel-blue/60 hover:text-white"
+      >
+        veya formu doldurun
+        <span class="chev inline-flex" aria-hidden="true">
+          <Icon name="chevron-down" class="size-5" />
+        </span>
+      </summary>
+
+      <div class="details-body mt-6 overflow-hidden rounded-2xl border border-white/15 bg-surface text-left shadow-2xl shadow-black/40">
+        <ContactForm client:visible />
+      </div>
+    </details>
+  </div>
+</section>
+
+<style>
+  /* strip the native disclosure marker; the chevron is the affordance */
+  summary {
+    list-style: none;
+  }
+  summary::-webkit-details-marker {
+    display: none;
+  }
+  summary::marker {
+    display: none;
+    content: "";
+  }
+
+  .chev {
+    transition: transform 0.3s ease;
+  }
+  details[open] .chev {
+    transform: rotate(180deg);
+  }
+
+  /* fade + slide the form in when the details opens */
+  @keyframes details-in {
+    from {
+      opacity: 0;
+      transform: translateY(14px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  details[open] .details-body {
+    animation: details-in 0.45s ease-out;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .chev {
+      transition: none;
+    }
+    details[open] .details-body {
+      animation: none;
+    }
+  }
+</style>

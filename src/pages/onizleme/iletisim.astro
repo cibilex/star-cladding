@@ -1,0 +1,36 @@
+---
+/**
+ * Dev-only preview: İletişim (Contact) section variants, stacked.
+ * Filled by the Contact variant work; deleted after a winner is picked.
+ */
+import Layout from "@/layouts/Layout.astro";
+import VariantLabel from "@/components/VariantLabel.astro";
+import ContactV1 from "@/components/sections/variants/ContactV1.astro";
+import ContactV2 from "@/components/sections/variants/ContactV2.astro";
+import ContactV3 from "@/components/sections/variants/ContactV3.astro";
+---
+
+<Layout title="Önizleme | İletişim Varyantları" noindex>
+  <main>
+    <VariantLabel
+      number={1}
+      name="Aurora Split Panel"
+      spec="CSS only — navy aurora + meteor arka plan, cam panel içinde form, mobilde hızlı aksiyon satırı"
+    />
+    <ContactV1 sectionId="iletisim-v1" />
+
+    <VariantLabel
+      number={2}
+      name="Floating Card on Light"
+      spec="CSS only — açık zemin, dönen conic halka kenarlıklı yüzen kart: form + navy bilgi kolonu"
+    />
+    <ContactV2 sectionId="iletisim-v2" />
+
+    <VariantLabel
+      number={3}
+      name="Conversion Strip"
+      spec="CSS + native <details>, 0 ekstra JS — dev telefon & WhatsApp; form 'veya formu doldurun' ile açılır"
+    />
+    <ContactV3 sectionId="iletisim-v3" />
+  </main>
+</Layout>

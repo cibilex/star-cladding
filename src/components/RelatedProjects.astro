@@ -1,0 +1,133 @@
+---
+import { Image } from "astro:assets";
+import Icon from "@/components/Icon.astro";
+import { getRelatedProjects } from "@/data/site";
+import { resolveImage } from "@/data/images";
+
+/**
+ * "Örnek Projelerimiz" — past projects that showcase a given service.
+ * Horizontal scroll-snap card strip, pure CSS (no JS island). Cards link to
+ * the project detail pages; falls back to a single /projeler teaser card when
+ * a service has no related projects yet.
+ */
+interface Props {
+  serviceSlug: string;
+  /** optional: shown in the section lead to tie the projects to the service */
+  serviceTitle?: string;
+}
+
+const { serviceSlug, serviceTitle } = Astro.props;
+const related = getRelatedProjects(serviceSlug);
+---
+
+<section
+  class="overflow-hidden bg-surface-container-low px-margin-mobile py-section-gap md:px-margin-desktop"
+>
+  <div class="mx-auto max-w-7xl">
+    <div class="mb-12 flex flex-wrap items-end justify-between gap-6">
+      <div>
+        <p
+          class="reveal mb-2 text-label font-semibold uppercase tracking-widest text-vibrant-steel-blue"
+        >
+          Referanslar
+        </p>
+        <h2 class="reveal text-headline text-primary" style="transition-delay: 80ms;">
+          Örnek Projelerimiz
+        </h2>
+        {
+          serviceTitle && (
+            <p
+              class="reveal mt-3 max-w-xl text-on-surface-variant"
+              style="transition-delay: 160ms;"
+            >
+              {serviceTitle} kapsamında tamamladığımız işlerden bir seçki.
+            </p>
+          )
+        }
+      </div>
+      <a
+        href="/projeler"
+        class="reveal inline-flex items-center gap-2 border-b border-vibrant-steel-blue pb-1 text-label font-semibold uppercase tracking-widest text-vibrant-steel-blue transition-colors hover:text-primary"
+        style="transition-delay: 160ms;"
+      >
+        Tüm Projeler
+        <Icon name="arrow-right" class="size-4" />
+      </a>
+    </div>
+
+    {
+      related.length > 0 ? (
+        <div class="no-scrollbar flex snap-x snap-mandatory gap-gutter overflow-x-auto pb-6">
+          {related.map((project, i) => {
+            const img = resolveImage(project.image);
+            return (
+            <a
+              href={`/projeler/${project.slug}`}
+              class="reveal group w-[80vw] shrink-0 snap-start md:w-[360px]"
+              style={`transition-delay: ${i * 120}ms;`}
+            >
+              <div class="relative mb-5 aspect-[4/3]">
+                <div
+                  class="absolute inset-0 translate-x-2.5 translate-y-2.5 border border-vibrant-steel-blue/40 transition-transform duration-500 group-hover:translate-x-1 group-hover:translate-y-1"
+                  aria-hidden="true"
+                >
+                </div>
+                <div class="relative h-full w-full overflow-hidden bg-surface-container">
+                  {img ? (
+                    <Image
+                      src={img}
+                      alt={`${project.title} — ${project.category}`}
+                      widths={[480, 800, 1200]}
+                      sizes="(min-width: 768px) 360px, 80vw"
+                      loading="lazy"
+                      class="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
+                    />
+                  ) : (
+                    <div class="flex h-full w-full items-center justify-center bg-gradient-to-br from-graphite to-steel-blue text-white/30 transition-transform duration-700 group-hover:scale-105">
+                      <Icon name="building" class="size-16" />
+                    </div>
+                  )}
+                  <span class="absolute left-4 top-4 border border-white/25 bg-primary/70 px-3 py-1.5 text-label font-semibold uppercase tracking-widest text-white backdrop-blur-sm">
+                    {project.category}
+                  </span>
+                </div>
+              </div>
+              <div class="flex items-start justify-between gap-4">
+                <div class="min-w-0">
+                  <h3 class="text-body-lg font-bold text-primary transition-colors group-hover:text-vibrant-steel-blue">
+                    {project.title}
+                  </h3>
+                  <p class="mt-1 text-label uppercase tracking-widest text-on-surface-variant">
+                    {project.location} · {project.year}
+                  </p>
+                </div>
+                <Icon
+                  name="arrow-up-right"
+                  class="mt-1 size-5 shrink-0 text-vibrant-steel-blue transition-transform group-hover:-translate-y-1 group-hover:translate-x-1"
+                />
+              </div>
+            </a>
+            );
+          })}
+        </div>
+      ) : (
+        <a
+          href="/projeler"
+          class="reveal group flex flex-col items-center justify-center gap-4 rounded-lg border border-dashed border-outline-variant p-16 text-center transition-colors hover:border-vibrant-steel-blue"
+        >
+          <Icon
+            name="building"
+            class="size-10 text-aluminum-silver transition-colors group-hover:text-vibrant-steel-blue"
+          />
+          <p class="text-body-lg font-bold text-primary">
+            Tüm projelerimizi inceleyin
+          </p>
+          <span class="inline-flex items-center gap-2 text-label font-semibold uppercase tracking-widest text-vibrant-steel-blue">
+            PROJELER
+            <Icon name="arrow-right" class="size-4 transition-transform group-hover:translate-x-1" />
+          </span>
+        </a>
+      )
+    }
+  </div>
+</section>
