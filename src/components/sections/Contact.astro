@@ -4,56 +4,184 @@ import Icon from "@/components/Icon.astro";
 import { company } from "@/data/site";
 import type { IconName } from "@/components/icon-registry";
 
-const contactItems: { icon: IconName; label: string; value: string; href?: string }[] = [
-  { icon: "map-pin", label: "ADRES", value: company.address },
+/**
+ * Contact — "Floating Card on Light" (CSS only).
+ * Light bg-surface section with a faint architectural grid backdrop and a
+ * text-gradient-steel heading. One elevated floating card wrapped in an
+ * animated conic-gradient ring border (HeroLight CTA technique: overflow-hidden
+ * wrapper + spinning conic gradient at inset-[-1000%] + inner card). Inside:
+ * a compact navy info column (phone / email / address + WhatsApp) next to the
+ * ContactForm island (form on the right on desktop, first on mobile), and a
+ * full-width lazy Google Maps embed as the card's bottom row with a
+ * "Yol Tarifi Al" pill.
+ */
+interface Props {
+  sectionId?: string;
+}
+const { sectionId = "iletisim" } = Astro.props;
+
+const infoItems: { icon: IconName; label: string; value: string; href?: string }[] = [
   { icon: "phone", label: "TELEFON", value: company.phone, href: company.phoneHref },
   { icon: "mail", label: "E-POSTA", value: company.email, href: `mailto:${company.email}` },
-  { icon: "clock", label: "ÇALIŞMA SAATLERİ", value: company.hours },
+  { icon: "instagram", label: "INSTAGRAM", value: company.instagramHandle, href: company.instagram },
+  { icon: "map-pin", label: "ADRES", value: company.address, href: company.mapsLink },
 ];
 ---
 
-<section id="iletisim" class="relative overflow-hidden bg-primary py-section-gap text-primary-foreground">
-  <div
-    class="relative z-10 mx-auto grid max-w-7xl grid-cols-1 gap-20 px-margin-mobile md:grid-cols-2 md:px-margin-desktop"
-  >
-    <div>
-      <h2 class="mb-12 text-display-mobile font-bold md:text-display-lg">
-        Hadi, <span class="text-vibrant-steel-blue">kalıcı</span> bir şeyler inşa
-        edelim.
+<section id={sectionId} class="relative overflow-hidden bg-surface py-section-gap">
+  <!-- ambient background: masked grid + soft glows -->
+  <div class="pointer-events-none absolute inset-0" aria-hidden="true">
+    <div
+      class="absolute inset-0"
+      style="background-image: linear-gradient(to right, rgba(26,40,59,0.045) 1px, transparent 1px), linear-gradient(to bottom, rgba(26,40,59,0.045) 1px, transparent 1px); background-size: 56px 56px; mask-image: radial-gradient(ellipse at center, black 40%, transparent 80%);"
+    >
+    </div>
+    <div class="absolute -left-24 top-0 h-80 w-80 rounded-full bg-vibrant-steel-blue/10 blur-3xl"></div>
+    <div class="absolute -bottom-24 -right-24 h-96 w-96 rounded-full bg-steel-blue/10 blur-3xl"></div>
+  </div>
+
+  <div class="relative z-10 mx-auto max-w-7xl px-margin-mobile md:px-margin-desktop">
+    <!-- heading -->
+    <div class="mx-auto mb-10 max-w-2xl text-center md:mb-12">
+      <span class="reveal mb-6 inline-flex items-center gap-4">
+        <span class="h-px w-12 bg-vibrant-steel-blue" aria-hidden="true"></span>
+        <span class="text-label uppercase tracking-[0.25em] text-on-surface-variant">İletişim</span>
+        <span class="h-px w-12 bg-vibrant-steel-blue" aria-hidden="true"></span>
+      </span>
+      <h2
+        class="reveal text-display-mobile font-extrabold text-primary md:text-display-lg"
+        style="transition-delay: 100ms;"
+      >
+        Projenizi <span class="text-gradient-steel">Konuşalım</span>
       </h2>
-
-      <div class="space-y-8">
-        {
-          contactItems.map((item) => (
-            <div class="flex items-start gap-4">
-              <Icon name={item.icon} class="size-6 shrink-0 text-vibrant-steel-blue" />
-              <div>
-                <p class="mb-1 text-label text-white/60">{item.label}</p>
-                {item.href ? (
-                  <a href={item.href} class="text-body-lg hover:text-vibrant-steel-blue">
-                    {item.value}
-                  </a>
-                ) : (
-                  <p class="text-body-lg">{item.value}</p>
-                )}
-              </div>
-            </div>
-          ))
-        }
-
-        <a
-          href={company.whatsapp}
-          target="_blank"
-          rel="noopener"
-          class="inline-flex items-center gap-2 bg-vibrant-steel-blue px-6 py-3 text-label font-bold uppercase tracking-widest text-white transition-transform hover:-translate-y-0.5"
-        >
-          <Icon name="message-circle" class="size-5" />
-          WhatsApp'tan Yaz
-        </a>
-      </div>
+      <p
+        class="reveal mt-5 text-body-lg text-on-surface-variant"
+        style="transition-delay: 200ms;"
+      >
+        Formu doldurun, ücretsiz keşif için en kısa sürede size dönelim — ya da tek
+        dokunuşla arayın.
+      </p>
     </div>
 
-    <!-- shadcn form island -->
-    <ContactForm client:visible />
+    <!-- floating card with animated conic ring border -->
+    <div class="reveal mx-auto max-w-5xl" style="transition-delay: 300ms;">
+      <div class="float-card relative overflow-hidden rounded-3xl p-[1.5px] shadow-2xl shadow-vibrant-steel-blue/20">
+        <span
+          class="absolute inset-[-1000%] animate-[spin_6s_linear_infinite] bg-[conic-gradient(from_90deg_at_50%_50%,rgba(45,90,136,0.12)_35%,rgba(45,90,136,0.9)_50%,rgba(45,90,136,0.12)_65%)] motion-reduce:animate-none"
+          aria-hidden="true"></span>
+
+        <div class="relative grid overflow-hidden rounded-[calc(1.5rem-1.5px)] bg-white md:grid-cols-5">
+          <!-- compact info column (left on desktop, below the form on mobile) -->
+          <div class="relative order-2 overflow-hidden bg-primary p-6 text-white md:order-1 md:col-span-2 md:px-8 md:py-10">
+            <div
+              class="pointer-events-none absolute -right-16 -top-16 h-48 w-48 rounded-full bg-vibrant-steel-blue/25 blur-3xl"
+              aria-hidden="true"
+            >
+            </div>
+
+            <div class="relative flex h-full flex-col">
+              <p class="mb-6 font-display text-headline font-bold">Bize Ulaşın</p>
+
+              <ul class="space-y-5">
+                {
+                  infoItems.map((item) => {
+                    const chip = (
+                      <span class="flex size-10 shrink-0 items-center justify-center rounded-lg border border-white/15 bg-white/10 text-aluminum-silver transition-all duration-300 group-hover:scale-110 group-hover:border-vibrant-steel-blue group-hover:text-white">
+                        <Icon name={item.icon} class="size-4" />
+                      </span>
+                    );
+                    const body = (
+                      <div class="pt-0.5">
+                        <p class="mb-0.5 text-label uppercase tracking-widest text-white/50">{item.label}</p>
+                        <p class="py-0.5 text-sm font-medium text-white transition-colors group-hover:text-aluminum-silver">
+                          {item.value}
+                        </p>
+                      </div>
+                    );
+                    return (
+                      <li>
+                        {item.href ? (
+                          <a
+                            href={item.href}
+                            {...(item.href.startsWith("http") ? { target: "_blank", rel: "noopener" } : {})}
+                            class="group flex items-start gap-3.5"
+                          >
+                            {chip}
+                            {body}
+                          </a>
+                        ) : (
+                          <div class="flex items-start gap-3.5">
+                            {chip}
+                            {body}
+                          </div>
+                        )}
+                      </li>
+                    );
+                  })
+                }
+              </ul>
+
+              <!-- same shape/size as the form's "Talep Gönder" button, outline variant -->
+              <a
+                href={company.whatsapp}
+                target="_blank"
+                rel="noopener"
+                class="mt-8 inline-flex min-h-[56px] w-full items-center justify-center gap-2 rounded-sm border border-white/30 bg-white/10 px-10 py-4 text-label font-semibold uppercase tracking-widest text-white backdrop-blur-md transition-all hover:-translate-y-0.5 hover:bg-white/20 active:scale-95 md:mt-auto"
+              >
+                <Icon name="message-circle" class="size-4" />
+                WhatsApp'tan Yaz
+              </a>
+            </div>
+          </div>
+
+          <!-- form (right on desktop, first on mobile) -->
+          <div class="order-1 md:order-2 md:col-span-3">
+            <ContactForm client:visible />
+          </div>
+
+          <!-- location: lazy map embed as the card's bottom row -->
+          <div class="relative order-3 border-t border-primary/10 md:col-span-5">
+            <iframe
+              src={company.mapsEmbed}
+              title={`Harita — ${company.address}`}
+              loading="lazy"
+              referrerpolicy="no-referrer-when-downgrade"
+              allowfullscreen
+              class="block h-[300px] w-full border-0 md:h-[240px]"></iframe>
+            <a
+              href={company.mapsLink}
+              target="_blank"
+              rel="noopener"
+              class="absolute bottom-4 right-4 inline-flex min-h-[44px] items-center gap-2 rounded-full bg-primary/90 px-5 py-2.5 text-label font-bold uppercase tracking-widest text-white shadow-lg backdrop-blur transition-colors hover:bg-vibrant-steel-blue"
+            >
+              <Icon name="map-pin" class="size-4" />
+              Yol Tarifi Al
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </section>
+
+<style>
+  /* gentle levitation for the card — subtle, premium */
+  @keyframes card-float {
+    0%,
+    100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(-8px);
+    }
+  }
+  .float-card {
+    animation: card-float 7s ease-in-out infinite;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .float-card {
+      animation: none;
+    }
+  }
+</style>
