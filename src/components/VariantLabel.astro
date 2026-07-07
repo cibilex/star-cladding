@@ -1,0 +1,29 @@
+---
+/**
+ * Dev-only divider used on the /onizleme/* variant preview pages.
+ * Renders a sticky navy strip labeling the variant that follows it.
+ * Deleted together with the preview pages once a winner is picked.
+ */
+interface Props {
+  /** e.g. 1, 2, 3 */
+  number: number;
+  /** variant name, e.g. "Bento Mosaic" */
+  name: string;
+  /** one-line spec of the technique, e.g. "CSS only — asimetrik bento grid" */
+  spec?: string;
+}
+
+const { number, name, spec } = Astro.props;
+---
+
+<div
+  class="sticky top-0 z-50 flex flex-wrap items-baseline gap-x-4 gap-y-1 border-b border-white/10 bg-primary px-margin-mobile py-4 text-white shadow-lg md:px-margin-desktop"
+>
+  <span
+    class="text-label uppercase tracking-widest text-aluminum-silver"
+  >
+    Varyant {number}
+  </span>
+  <span class="font-display text-lg font-bold">{name}</span>
+  {spec && <span class="text-sm text-white/60">{spec}</span>}
+</div>

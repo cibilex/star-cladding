@@ -1,55 +1,58 @@
 ---
+import { getImage } from "astro:assets";
 import { projects } from "@/data/site";
+import { resolveImage } from "@/data/images";
 import Icon from "@/components/Icon.astro";
-// Home preview: show the first 3, link out to the full page.
-const preview = projects.slice(0, 3);
+import ProjectsRail from "@/components/react/variants/ProjectsRail";
+
+/**
+ * Projects — "Cinematic Rail".
+ * Deep-navy section; the heading is static (0 JS) and the rail below is a
+ * Motion island (client:visible): draggable + snapping horizontal cards,
+ * progress bar and prev/next arrows. Photos are optimized here with
+ * getImage() and passed to the island as plain URL strings (serializable).
+ */
+const railProjects = await Promise.all(
+  projects.map(async (project) => {
+    const img = resolveImage(project.image);
+    const optimized = img
+      ? await getImage({ src: img, width: 1200, format: "webp" })
+      : null;
+    return { ...project, image: optimized?.src ?? null };
+  }),
+);
 ---
 
-<section id="projeler" class="overflow-hidden px-margin-mobile py-section-gap md:px-margin-desktop">
-  <div class="mb-12 flex flex-wrap items-end justify-between gap-6">
+<section id="projeler" class="overflow-hidden bg-primary py-section-gap">
+  <div
+    class="mb-12 flex flex-wrap items-end justify-between gap-6 px-margin-mobile md:mb-16 md:px-margin-desktop"
+  >
     <div>
-      <p class="mb-2 text-label font-semibold uppercase tracking-widest text-vibrant-steel-blue">
+      <p
+        class="reveal mb-3 flex items-center gap-3 text-label uppercase tracking-[0.25em] text-aluminum-silver"
+      >
+        <span class="h-px w-10 bg-vibrant-steel-blue" aria-hidden="true"></span>
         Seçkin Projeler
       </p>
-      <h2 class="text-headline text-primary">Projelerimiz</h2>
+      <h2
+        class="reveal text-headline font-extrabold text-white md:text-display-lg"
+        style="transition-delay: 100ms;"
+      >
+        Yapılarımız <span class="text-white/50">Konuşsun</span>
+      </h2>
     </div>
     <a
       href="/projeler"
-      class="inline-flex items-center gap-2 border-b border-vibrant-steel-blue pb-1 text-label font-semibold uppercase tracking-widest text-vibrant-steel-blue"
+      class="reveal group inline-flex items-center gap-2 border-b border-white/40 pb-1 text-label font-semibold uppercase tracking-widest text-white transition-colors hover:border-white"
+      style="transition-delay: 200ms;"
     >
       Tüm Projeler
-      <Icon name="arrow-right" class="size-4" />
+      <Icon
+        name="arrow-right"
+        class="size-4 transition-transform group-hover:translate-x-1"
+      />
     </a>
   </div>
 
-  <!-- horizontal scroll showcase (swipe on mobile) -->
-  <div class="no-scrollbar flex gap-gutter overflow-x-auto pb-10">
-    {
-      preview.map((project, i) => (
-        <a
-          href={`/projeler/${project.slug}`}
-          class="reveal group min-w-[80vw] md:min-w-[40vw]"
-          style={`transition-delay: ${i * 150}ms;`}
-        >
-          <div class="mb-6 h-[480px] overflow-hidden bg-surface-container">
-            {project.image ? (
-              <img
-                src={project.image}
-                alt={project.title}
-                class="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
-              />
-            ) : (
-              <div class="flex h-full w-full items-center justify-center bg-gradient-to-br from-graphite to-steel-blue text-white/30">
-                <Icon name="building" class="size-16" />
-              </div>
-            )}
-          </div>
-          <h3 class="text-body-lg font-bold text-primary">{project.title}</h3>
-          <p class="text-label uppercase tracking-widest text-on-surface-variant">
-            {project.category} · {project.location}
-          </p>
-        </a>
-      ))
-    }
-  </div>
+  <ProjectsRail client:visible projects={railProjects} />
 </section>

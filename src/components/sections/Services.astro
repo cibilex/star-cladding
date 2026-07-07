@@ -1,61 +1,165 @@
 ---
-import { services, stats } from "@/data/site";
+import { Image } from "astro:assets";
+import { services, company } from "@/data/site";
+import { resolveImage } from "@/data/images";
 import Icon from "@/components/Icon.astro";
+
+/**
+ * Home services section — "Bento Mosaic". CSS only, 0 JS.
+ * Asymmetric but compact bento: three photo tiles in varied sizes carry the
+ * visual weight; the remaining services are quiet text tiles (no icons).
+ * A navy quote-CTA strip closes the section. Reveal cascade via the global
+ * IntersectionObserver.
+ */
+
+// Bento placement: photo tiles get spans, the rest are compact text tiles.
+// Spans are literal class strings so Tailwind keeps them.
+const SPANS: Record<string, string> = {
+  "cam-cephe": "md:col-span-3 md:row-span-2",
+  "aluminyum-cephe-giydirme": "md:col-span-3 md:row-span-2",
+  "cam-balkon": "md:col-span-2 md:row-span-2",
+};
+const PHOTO_SLUGS = Object.keys(SPANS);
+
+const photoTiles = PHOTO_SLUGS.map(
+  (slug) => services.find((s) => s.slug === slug)!,
+).filter(Boolean);
+// Curated subset — niche/overlapping services stay on /hizmetler only.
+const EXCLUDED = ["giyotin-cam", "aluminyum-ofis-bolme", "silikon-cephe-kaplama"];
+const textTiles = services.filter(
+  (s) => !PHOTO_SLUGS.includes(s.slug) && !EXCLUDED.includes(s.slug),
+);
+// order: 2 big photos, then the tall photo + text tiles fill the remaining rows
+const tiles = [
+  photoTiles[0],
+  photoTiles[1],
+  photoTiles[2],
+  ...textTiles,
+];
 ---
 
-<section id="hizmetler" class="bg-surface px-margin-mobile py-section-gap md:px-margin-desktop">
+<section id="hizmetler" class="bg-surface px-margin-mobile py-16 md:px-margin-desktop md:py-24">
   <div class="mx-auto max-w-7xl">
-    <div class="mb-20 flex flex-wrap items-end justify-between gap-6">
+    <!-- kicker + heading + index link -->
+    <div class="mb-8 flex flex-wrap items-end justify-between gap-6 md:mb-10">
       <div>
-        <p class="mb-2 text-label font-semibold uppercase tracking-widest text-vibrant-steel-blue">
+        <p class="reveal mb-2 text-label font-semibold uppercase tracking-widest text-vibrant-steel-blue">
           Uzmanlık Alanlarımız
         </p>
-        <h2 class="reveal text-headline text-primary">Hizmetlerimiz</h2>
+        <h2
+          class="reveal text-headline text-primary md:text-display-mobile"
+          style="transition-delay: 80ms;"
+        >
+          Hizmetlerimiz
+        </h2>
       </div>
       <a
         href="/hizmetler"
-        class="inline-flex items-center gap-2 border-b border-vibrant-steel-blue pb-1 text-label font-semibold uppercase tracking-widest text-vibrant-steel-blue"
+        class="reveal group inline-flex items-center gap-2 border-b border-vibrant-steel-blue pb-1 text-label font-semibold uppercase tracking-widest text-vibrant-steel-blue"
+        style="transition-delay: 160ms;"
       >
         Tüm Hizmetler
-        <Icon name="arrow-right" class="size-4" />
+        <Icon name="arrow-right" class="size-4 transition-transform group-hover:translate-x-1" />
       </a>
     </div>
 
-    <div class="grid grid-cols-1 gap-16 md:grid-cols-3">
+    <!-- bento grid: 6 cols, compact rows; every tile carries its service photo -->
+    <div class="grid grid-cols-1 gap-4 md:grid-cols-6 md:auto-rows-[9.5rem]">
       {
-        services.map((service, i) => (
-          <a
-            href={`/hizmetler/${service.slug}`}
-            class="reveal group block"
-            style={`transition-delay: ${i * 150}ms;`}
-          >
-            <Icon
-              name={service.icon}
-              class="mb-6 size-9 text-graphite transition-colors group-hover:text-vibrant-steel-blue"
-            />
-            <h3 class="mb-4 text-body-lg font-bold text-primary">{service.title}</h3>
-            <p class="text-on-surface-variant">{service.summary}</p>
-            <span class="mt-4 inline-flex items-center gap-1 text-label font-semibold uppercase tracking-widest text-vibrant-steel-blue opacity-0 transition-opacity group-hover:opacity-100">
-              Detaylar
-              <Icon name="arrow-right" class="size-4" />
-            </span>
-          </a>
-        ))
+        tiles.map((service, i) => {
+          const img = resolveImage(service.image);
+          const isLarge = PHOTO_SLUGS.includes(service.slug);
+          return (
+            <a
+              href={`/hizmetler/${service.slug}`}
+              class:list={[
+                "reveal group relative block overflow-hidden rounded-xl",
+                "h-56 md:h-auto",
+                SPANS[service.slug] ?? "md:col-span-2 md:row-span-1",
+              ]}
+              style={`transition-delay: ${Math.min(i, 5) * 90}ms;`}
+            >
+              {img ? (
+                <Image
+                  src={img}
+                  alt={`${service.title} uygulaması`}
+                  widths={[480, 800, 1200]}
+                  sizes={isLarge ? "(min-width: 768px) 50vw, 100vw" : "(min-width: 768px) 33vw, 100vw"}
+                  loading="lazy"
+                  decoding="async"
+                  class="absolute inset-0 h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.05]"
+                />
+              ) : (
+                <div
+                  class="absolute inset-0 bg-gradient-to-br from-graphite to-steel-blue"
+                  aria-hidden="true"
+                >
+                </div>
+              )}
+              <div
+                class="absolute inset-0 bg-gradient-to-t from-primary/85 via-primary/30 to-primary/5 transition-colors duration-300 group-hover:via-primary/40"
+                aria-hidden="true"
+              >
+              </div>
+              <div class="absolute inset-x-0 bottom-0 p-4 md:p-5">
+                <h3
+                  class:list={[
+                    "font-display font-bold text-white",
+                    isLarge ? "text-xl md:text-2xl" : "text-base leading-snug",
+                  ]}
+                >
+                  {service.title}
+                </h3>
+                {isLarge && (
+                  <p class="mt-1 max-w-md text-sm text-white/75">
+                    {service.summary}
+                  </p>
+                )}
+                <span
+                  class:list={[
+                    "inline-flex items-center gap-2 text-label font-semibold uppercase tracking-widest text-white/0 transition-colors duration-300 group-hover:text-white",
+                    isLarge ? "mt-3" : "mt-1.5",
+                  ]}
+                >
+                  Detaylar
+                  <Icon name="arrow-right" class="size-4" />
+                </span>
+              </div>
+            </a>
+          );
+        })
       }
     </div>
 
-    <!-- stats strip -->
-    <div class="mt-24 grid grid-cols-3 gap-8 border-t border-outline-variant pt-12">
-      {
-        stats.map((s) => (
-          <div class="reveal text-center md:text-left">
-            <p class="text-display-mobile font-extrabold text-primary">{s.value}</p>
-            <p class="text-label uppercase tracking-widest text-on-surface-variant">
-              {s.label}
-            </p>
-          </div>
-        ))
-      }
+    <!-- quote CTA strip -->
+    <div
+      class="reveal mt-8 flex flex-wrap items-center justify-between gap-5 rounded-xl bg-primary bg-gradient-to-br from-primary via-graphite to-steel-blue p-6 md:p-8"
+      style="transition-delay: 120ms;"
+    >
+      <div>
+        <p class="text-label uppercase tracking-widest text-aluminum-silver">
+          Ücretsiz Keşif ve Teklif
+        </p>
+        <p class="mt-2 font-display text-xl font-bold text-white md:text-2xl">
+          Projenizi konuşalım, ücretsiz keşif sonrası net teklifinizi sunalım.
+        </p>
+      </div>
+      <div class="flex flex-wrap items-center gap-5">
+        <a
+          href="#iletisim"
+          class="shimmer-btn inline-flex h-12 items-center justify-center gap-2 rounded-full bg-vibrant-steel-blue px-7 text-label font-semibold uppercase tracking-widest text-white transition-colors hover:bg-steel-blue"
+        >
+          Teklif Alın
+          <Icon name="arrow-right" class="size-4" />
+        </a>
+        <a
+          href={company.phoneHref}
+          class="inline-flex items-center gap-2 text-label font-semibold uppercase tracking-widest text-white/80 transition-colors hover:text-white"
+        >
+          <Icon name="phone" class="size-4" />
+          {company.phone}
+        </a>
+      </div>
     </div>
   </div>
 </section>

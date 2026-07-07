@@ -5,7 +5,9 @@ import Footer from "@/components/sections/Footer.astro";
 import Contact from "@/components/sections/Contact.astro";
 import PageHero from "@/components/PageHero.astro";
 import Icon from "@/components/Icon.astro";
+import { Image } from "astro:assets";
 import { projects } from "@/data/site";
+import { resolveImage } from "@/data/images";
 
 export function getStaticPaths() {
   return projects.map((project) => ({
@@ -15,6 +17,7 @@ export function getStaticPaths() {
 }
 
 const { project } = Astro.props;
+const img = resolveImage(project.image);
 const meta = [
   { label: "Kategori", value: project.category },
   { label: "Konum", value: project.location },
@@ -40,17 +43,32 @@ const meta = [
 
     <section class="px-margin-mobile py-section-gap md:px-margin-desktop">
       <div class="mx-auto max-w-7xl">
-        <!-- main image -->
-        <div class="mb-16 h-[260px] overflow-hidden bg-surface-container md:h-[520px]">
+        <!-- main photo band -->
+        <div class="relative mb-16 h-[420px] md:h-[560px]">
+          <div
+            class="absolute inset-0 translate-x-3.5 translate-y-3.5 border border-vibrant-steel-blue/40"
+            aria-hidden="true"
+          >
+          </div>
+          <div class="relative h-full w-full overflow-hidden bg-surface-container">
           {
-            project.image ? (
-              <img src={project.image} alt={project.title} class="h-full w-full object-cover" />
+            img ? (
+              <Image
+                src={img}
+                alt={`${project.title} — ${project.category}`}
+                widths={[800, 1200, 1600]}
+                sizes="(min-width: 1344px) 1280px, 100vw"
+                loading="eager"
+                fetchpriority="high"
+                class="h-full w-full object-cover"
+              />
             ) : (
               <div class="flex h-full w-full items-center justify-center bg-gradient-to-br from-graphite to-steel-blue text-white/30">
                 <Icon name="building" class="size-20" />
               </div>
             )
           }
+          </div>
         </div>
 
         <div class="grid grid-cols-1 gap-16 md:grid-cols-12">

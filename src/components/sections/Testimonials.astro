@@ -1,44 +1,140 @@
 ---
 import { testimonials } from "@/data/site";
 import Icon from "@/components/Icon.astro";
+
+/**
+ * Testimonials — "Marquee Wall" (CSS only, 0 JS).
+ * Single infinite CSS-keyframe marquee row of testimonial cards. Pauses on
+ * hover, edge-fades with a CSS mask, and falls back to a static wrapped grid
+ * under prefers-reduced-motion. The array is duplicated inline for a seamless
+ * loop — every copy after the first set is aria-hidden.
+ */
+
+// One "half" = 2× the testimonials (so the half is wide enough to cover large
+// viewports); the track is 2 halves and the keyframe translates by exactly one
+// half for a seamless loop. Everything after the first real set is decoration.
+const half = [...testimonials, ...testimonials];
+const loop = [...half, ...half];
 ---
 
-<section id="yorumlar" class="bg-surface-container-low px-margin-mobile py-section-gap md:px-margin-desktop">
-  <div class="mx-auto mb-20 max-w-7xl text-center">
-    <p class="mb-2 text-label font-semibold uppercase tracking-widest text-vibrant-steel-blue">
+<section
+  id="yorumlar"
+  class="overflow-hidden bg-surface-container-low py-section-gap"
+>
+  <div
+    class="mx-auto mb-14 max-w-7xl px-margin-mobile text-center md:mb-20 md:px-margin-desktop"
+  >
+    <p
+      class="reveal mb-2 text-label font-semibold uppercase tracking-widest text-vibrant-steel-blue"
+    >
       Kanıtlanmış Performans
     </p>
-    <h2 class="text-headline text-primary">Müşteri Yorumları</h2>
+    <h2 class="reveal text-headline text-primary" style="transition-delay: 100ms;">
+      Müşteri Yorumları
+    </h2>
   </div>
 
-  <div class="mx-auto grid max-w-7xl grid-cols-1 gap-gutter md:grid-cols-3">
-    {
-      testimonials.map((t, i) => (
-        <figure
-          class="reveal flex h-full flex-col bg-surface p-10"
-          style={`transition-delay: ${i * 150}ms;`}
-        >
-          <div class="mb-4 flex gap-1 text-vibrant-steel-blue">
-            {[0, 1, 2, 3, 4].map(() => (
-              <Icon name="star" class="size-5" fill />
-            ))}
-          </div>
-          <blockquote class="mb-8 flex-grow italic text-on-surface-variant">
-            “{t.quote}”
-          </blockquote>
-          <figcaption class="flex items-center gap-4 border-t border-outline-variant pt-6">
-            <div class="flex h-10 w-10 items-center justify-center bg-surface-container font-bold text-primary">
-              {t.name.charAt(0)}
-            </div>
-            <div>
-              <p class="text-label font-bold text-primary">{t.name}</p>
-              <p class="text-[10px] uppercase tracking-widest text-on-surface-variant">
-                {t.role}
-              </p>
-            </div>
-          </figcaption>
-        </figure>
-      ))
-    }
+  <div class="reveal marquee-mask" style="transition-delay: 200ms;">
+    <div class="marquee-row">
+      <div class="marquee-track">
+        {
+          loop.map((t, i) => (
+            <figure
+              class:list={[
+                "flex w-[85vw] max-w-[340px] shrink-0 flex-col rounded-2xl border border-outline-variant/60 bg-surface p-8 shadow-sm md:max-w-[380px]",
+                i >= testimonials.length && "marquee-dup",
+              ]}
+              aria-hidden={i >= testimonials.length ? "true" : undefined}
+            >
+              <div class="flex items-center justify-between">
+                <Icon name="quote" class="size-5 text-vibrant-steel-blue" fill />
+                {typeof t.rating === "number" && (
+                  <div class="flex gap-1 text-vibrant-steel-blue">
+                    {Array.from({ length: t.rating }).map(() => (
+                      <Icon name="star" class="size-4" fill />
+                    ))}
+                  </div>
+                )}
+              </div>
+              <blockquote class="mt-5 flex-grow text-on-surface-variant">
+                “{t.quote}”
+              </blockquote>
+              <figcaption class="mt-6 flex items-center gap-3 border-t border-outline-variant/60 pt-5">
+                <span class="flex size-10 shrink-0 items-center justify-center rounded-full bg-vibrant-steel-blue/10 font-display font-bold text-vibrant-steel-blue">
+                  {t.name.charAt(0)}
+                </span>
+                <span>
+                  <span class="block text-label font-bold uppercase tracking-widest text-primary">
+                    {t.name}
+                  </span>
+                  <span class="mt-0.5 block text-[11px] uppercase tracking-widest text-on-surface-variant">
+                    {t.role}
+                    {t.company && ` · ${t.company}`}
+                  </span>
+                </span>
+              </figcaption>
+            </figure>
+          ))
+        }
+      </div>
+    </div>
   </div>
 </section>
+
+<style>
+  /* Edge fade so cards dissolve at the viewport edges */
+  .marquee-mask {
+    mask-image: linear-gradient(
+      to right,
+      transparent,
+      black 8%,
+      black 92%,
+      transparent
+    );
+    -webkit-mask-image: linear-gradient(
+      to right,
+      transparent,
+      black 8%,
+      black 92%,
+      transparent
+    );
+  }
+
+  .marquee-track {
+    display: flex;
+    gap: 24px; /* keep in sync with the -12px half-gap in the keyframe */
+    width: max-content;
+    animation: marquee-scroll 55s linear infinite;
+  }
+  .marquee-track:hover {
+    animation-play-state: paused;
+  }
+
+  /* Translate by exactly one half (content + half a gap) for a seamless loop */
+  @keyframes marquee-scroll {
+    from {
+      transform: translateX(0);
+    }
+    to {
+      transform: translateX(calc(-50% - 12px));
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .marquee-mask {
+      mask-image: none;
+      -webkit-mask-image: none;
+    }
+    .marquee-track {
+      animation: none;
+      width: 100%;
+      flex-wrap: wrap;
+      justify-content: center;
+      padding-inline: 20px;
+    }
+    /* static fallback: one wrapped grid of the 3 real cards */
+    .marquee-dup {
+      display: none !important;
+    }
+  }
+</style>

@@ -1,0 +1,162 @@
+---
+import { Image } from "astro:assets";
+import Icon from "@/components/Icon.astro";
+import { company } from "@/data/site";
+import type { Service } from "@/data/site";
+import { resolveImage } from "@/data/images";
+
+/**
+ * Hero band for service detail pages (/hizmetler/[slug]).
+ * Navy backdrop with the service's own photo as a subtle full-bleed texture
+ * (low opacity under a navy scrim), plus drifting aurora glows, a faint masked
+ * architectural grid and an oversized ghost watermark of the service's icon.
+ * Pair with the default <Header /> (dark variant): links render white over navy.
+ */
+interface Props {
+  service: Service;
+}
+
+const { service } = Astro.props;
+const img = resolveImage(service.image);
+
+const crumbs = [
+  { label: "Ana Sayfa", href: "/" },
+  { label: "Hizmetler", href: "/hizmetler" },
+  { label: service.title },
+];
+---
+
+<section
+  class="relative overflow-hidden bg-primary px-margin-mobile pb-20 pt-40 text-primary-foreground md:px-margin-desktop md:pb-24"
+>
+  <!-- service photo as subtle full-bleed texture under a navy scrim -->
+  {
+    img ? (
+      <div class="pointer-events-none absolute inset-0">
+        <Image
+          src={img}
+          alt={`${service.title} uygulaması`}
+          widths={[768, 1280, 1920]}
+          sizes="100vw"
+          loading="eager"
+          fetchpriority="high"
+          class="h-full w-full object-cover opacity-30"
+        />
+        <div class="absolute inset-0 bg-primary/70" aria-hidden="true" />
+      </div>
+    ) : null
+  }
+
+  <!-- ambient backdrop: aurora blobs + masked grid + ghost service icon -->
+  <div class="pointer-events-none absolute inset-0" aria-hidden="true">
+    <div
+      class="aurora-blob absolute -right-24 -top-32 h-[420px] w-[420px] rounded-full bg-vibrant-steel-blue/30 blur-3xl"
+    >
+    </div>
+    <div
+      class="aurora-blob aurora-blob-alt absolute -bottom-44 -left-32 h-[380px] w-[380px] rounded-full bg-steel-blue/20 blur-3xl"
+    >
+    </div>
+    <div
+      class="absolute inset-0"
+      style="background-image: linear-gradient(to right, rgba(255,255,255,0.05) 1px, transparent 1px), linear-gradient(to bottom, rgba(255,255,255,0.05) 1px, transparent 1px); background-size: 56px 56px; mask-image: radial-gradient(ellipse at center, black 35%, transparent 80%); -webkit-mask-image: radial-gradient(ellipse at center, black 35%, transparent 80%);"
+    >
+    </div>
+    <!-- oversized ghost watermark of the service icon -->
+    <div
+      class="absolute -bottom-16 -right-12 text-white/[0.05] md:-bottom-24 md:right-4"
+    >
+      <Icon name={service.icon} class="size-64 md:size-96" />
+    </div>
+  </div>
+
+  <div class="relative z-10 mx-auto max-w-7xl">
+    <nav
+      class="reveal mb-6 flex flex-wrap items-center gap-2 text-label uppercase tracking-widest text-white/50"
+      aria-label="breadcrumb"
+    >
+      {
+        crumbs.map((c, i) => (
+          <>
+            {c.href ? (
+              <a href={c.href} class="transition-colors hover:text-white">
+                {c.label}
+              </a>
+            ) : (
+              <span class="text-white/80">{c.label}</span>
+            )}
+            {i < crumbs.length - 1 && <span>/</span>}
+          </>
+        ))
+      }
+    </nav>
+
+    <p
+      class="reveal mb-3 text-label font-semibold uppercase tracking-widest text-vibrant-steel-blue"
+      style="transition-delay: 80ms;"
+    >
+      Hizmet
+    </p>
+
+    <h1
+      class="reveal max-w-3xl text-display-mobile font-extrabold md:text-display-lg"
+      style="transition-delay: 160ms;"
+    >
+      {service.title}
+    </h1>
+
+    <p
+      class="reveal mt-6 max-w-2xl text-body-lg text-white/80"
+      style="transition-delay: 240ms;"
+    >
+      {service.summary}
+    </p>
+
+    <div
+      class="reveal mt-10 flex flex-wrap items-center gap-4"
+      style="transition-delay: 320ms;"
+    >
+      <a
+        href="#iletisim"
+        class="shimmer-btn inline-flex items-center justify-center gap-2 rounded-sm bg-vibrant-steel-blue px-8 py-3.5 text-label font-semibold uppercase tracking-widest text-white shadow-xl transition-all hover:-translate-y-0.5 hover:shadow-[0_0_20px_rgba(45,90,136,0.6)]"
+      >
+        TEKLİF AL
+        <Icon name="arrow-right" class="size-4" />
+      </a>
+      <a
+        href={company.whatsapp}
+        target="_blank"
+        rel="noopener"
+        class="inline-flex items-center justify-center gap-2 rounded-sm border border-white/30 bg-white/10 px-8 py-3.5 text-label font-semibold uppercase tracking-widest text-white backdrop-blur-md transition-colors hover:bg-white/20"
+      >
+        <Icon name="message-circle" class="size-4" />
+        WHATSAPP
+      </a>
+    </div>
+  </div>
+</section>
+
+<style>
+  /* Slow ambient drift for the aurora glows. */
+  @keyframes aurora-drift {
+    from {
+      transform: translate3d(0, 0, 0) scale(1);
+    }
+    to {
+      transform: translate3d(-40px, 30px, 0) scale(1.15);
+    }
+  }
+  .aurora-blob {
+    animation: aurora-drift 14s ease-in-out infinite alternate;
+  }
+  .aurora-blob-alt {
+    animation-duration: 20s;
+    animation-direction: alternate-reverse;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .aurora-blob,
+    .aurora-blob-alt {
+      animation: none;
+    }
+  }
+</style>
