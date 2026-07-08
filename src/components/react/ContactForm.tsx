@@ -1,24 +1,44 @@
 import * as React from "react";
-import { CircleCheck } from "lucide-react";
+import { CircleCheck, TriangleAlert } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 
 /**
  * Contact form island built from shadcn/ui primitives.
- * Submit is stubbed — wire to Formspree / Web3Forms / your API.
+ * Submits to Netlify Forms via fetch so we control the success/error UI
+ * ourselves. The build-time-only static detector form lives in Contact.astro.
  */
 export default function ContactForm() {
-  const [sent, setSent] = React.useState(false);
+  const [status, setStatus] = React.useState<"idle" | "submitting" | "sent" | "error">("idle");
   const [channel, setChannel] = React.useState<"phone" | "email">("phone");
 
-  function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    // TODO: POST to a form backend (Formspree / Web3Forms / Resend).
-    setSent(true);
+    setStatus("submitting");
+
+    const formData = new FormData(e.currentTarget);
+    const payload = new URLSearchParams();
+    payload.set("form-name", "contact");
+    payload.set("name", String(formData.get("name") ?? ""));
+    payload.set(channel, String(formData.get(channel) ?? ""));
+    payload.set("message", String(formData.get("message") ?? ""));
+
+    try {
+      const res = await fetch("/", {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: payload.toString(),
+      });
+      if (!res.ok) throw new Error(`Netlify Forms responded ${res.status}`);
+      setStatus("sent");
+    } catch (err) {
+      console.error("Contact form submission failed:", err);
+      setStatus("error");
+    }
   }
 
-  if (sent) {
+  if (status === "sent") {
     return (
       <div className="flex h-full min-h-[320px] flex-col items-center justify-center bg-white p-10 text-center">
         <CircleCheck className="mb-4 size-12 text-vibrant-steel-blue" aria-hidden="true" />
@@ -33,7 +53,14 @@ export default function ContactForm() {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6 bg-white p-10">
+    <form
+      onSubmit={handleSubmit}
+      method="POST"
+      data-netlify="true"
+      name="contact"
+      netlify-honeypot="bot-field"
+      className="space-y-6 bg-white p-10"
+    >
       <div>
         <label className="mb-2 block text-label font-semibold uppercase tracking-widest text-primary">
           Ad Soyad
@@ -110,8 +137,22 @@ export default function ContactForm() {
           placeholder="Vizyonunuzu anlatın..."
         />
       </div>
-      <Button type="submit" variant="accent" size="lg" className="w-full shimmer-btn">
-        TALEP GÖNDER
+
+      {status === "error" && (
+        <p role="alert" className="flex items-center gap-2 text-sm font-medium text-red-600">
+          <TriangleAlert className="size-4 shrink-0" aria-hidden="true" />
+          Bir şeyler ters gitti, lütfen tekrar deneyin ya da bizi doğrudan arayın.
+        </p>
+      )}
+
+      <Button
+        type="submit"
+        variant="accent"
+        size="lg"
+        className="w-full shimmer-btn"
+        disabled={status === "submitting"}
+      >
+        {status === "submitting" ? "GÖNDERİLİYOR..." : "TALEP GÖNDER"}
       </Button>
     </form>
   );
