@@ -295,6 +295,50 @@
   color: var(--primary);
   opacity: 1;
 }
+/* Logo wordmark (src/components/Logo.astro). Default: navy, for any
+   light-background context (footer, inner pages). Inside #main-nav the
+   more specific rules below win and swap it for the dark-hero/on-light/
+   scrolled treatment, mirroring .header-link's color logic. */
+.logo-text {
+  color: var(--primary);
+  transition:
+    color 0.3s ease,
+    letter-spacing 0.3s ease;
+}
+.logo-text-sub {
+  opacity: 0.6;
+  transition: opacity 0.3s ease;
+}
+.logo-link:hover .logo-text {
+  color: var(--vibrant-steel-blue);
+  letter-spacing: 0.01em;
+}
+.logo-link:hover .logo-text-sub {
+  opacity: 0.9;
+}
+#main-nav .logo-text {
+  color: #fff;
+}
+#main-nav .logo-link:hover .logo-text {
+  color: var(--aluminum-silver);
+}
+#main-nav.on-light .logo-text {
+  color: var(--primary);
+}
+#main-nav.on-light .logo-text-sub {
+  opacity: 0.55;
+}
+#main-nav.on-light .logo-link:hover .logo-text {
+  color: var(--vibrant-steel-blue);
+}
+@keyframes logo-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+.logo-mark.logo-spin {
+  animation: logo-spin 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
 /* frosted bg + dark content once scrolled past the hero */
 #main-nav.is-scrolled {
   background-color: color-mix(in srgb, var(--surface) 82%, transparent);

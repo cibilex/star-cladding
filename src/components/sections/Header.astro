@@ -1,9 +1,8 @@
 ---
-import { Image } from "astro:assets";
 import MobileMenu from "@/components/react/MobileMenu";
 import Icon from "@/components/Icon.astro";
+import Logo from "@/components/Logo.astro";
 import { company, nav, social } from "@/data/site";
-import logo from "@/assets/images/logo.png";
 
 interface Props {
   /** "light" renders dark links/pills from the start — use over a light hero. */
@@ -94,15 +93,7 @@ const { variant = "dark" } = Astro.props;
   <nav
     class="flex h-16 w-full items-center justify-between px-margin-mobile md:px-margin-desktop"
   >
-    <a href="/" class="flex items-center" aria-label={company.name}>
-      <Image
-        src={logo}
-        alt="Star Alüminyum logo"
-        width={128}
-        height={128}
-        class="h-14 w-14 object-contain"
-      />
-    </a>
+    <Logo size="lg" hideTextOnMobile />
 
     <!-- Desktop links (static, 0 JS) -->
     <div class="hidden items-center gap-8 md:flex">
