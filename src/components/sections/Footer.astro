@@ -6,12 +6,20 @@ import logo from "@/assets/images/logo.png";
 const year = new Date().getFullYear();
 ---
 
+<!--
+  Minimalist footer. One slim row (brand · nav · socials/lang), a hairline,
+  one slim bottom row (copyright · address/phone). Quote CTA lives as a
+  plain text link in the nav row so goal #5 (reachable from every section)
+  still holds.
+-->
 <footer
-  class="bg-surface-container px-margin-mobile py-section-gap md:px-margin-desktop"
+  class="border-t border-outline-variant bg-surface-container-low px-margin-mobile py-10 md:px-margin-desktop md:py-12"
 >
-  <div class="mx-auto mb-20 grid max-w-7xl grid-cols-1 gap-12 md:grid-cols-4">
-    <div class="md:col-span-2">
-      <div class="mb-6 flex items-center gap-3">
+  <div class="mx-auto max-w-7xl">
+    <div
+      class="flex flex-col gap-8 md:flex-row md:items-center md:justify-between"
+    >
+      <a href="/" class="flex shrink-0 items-center gap-3" aria-label={company.name}>
         <Image
           src={logo}
           alt="Star Alüminyum logo"
@@ -19,17 +27,32 @@ const year = new Date().getFullYear();
           height={64}
           class="h-8 w-8 object-contain"
         />
-        <span class="font-display text-xl font-bold tracking-tighter text-primary">
+        <span class="font-display text-lg font-bold tracking-tight text-primary">
           {company.name}
         </span>
-      </div>
-      <p class="mb-6 max-w-sm text-on-surface-variant">
-        Yarının siluetlerini sürdürülebilir, yüksek performanslı cephe
-        mühendisliği ile tanımlıyoruz.
-      </p>
+      </a>
 
-      <!-- social icon buttons -->
-      <div class="mb-8 flex items-center gap-3">
+      <nav class="flex flex-wrap items-center gap-x-7 gap-y-3 md:gap-x-8">
+        {
+          nav.map((item) => (
+            <a
+              href={item.href}
+              class="text-sm font-medium text-on-surface-variant transition-colors hover:text-vibrant-steel-blue"
+            >
+              {item.label}
+            </a>
+          ))
+        }
+        <a
+          href="/#iletisim"
+          class="inline-flex items-center gap-1.5 text-sm font-semibold text-vibrant-steel-blue transition-colors hover:text-primary"
+        >
+          Teklif Al
+          <Icon name="arrow-right" class="size-3.5" />
+        </a>
+      </nav>
+
+      <div class="flex shrink-0 items-center gap-4">
         {
           social.map((s) => (
             <a
@@ -37,69 +60,25 @@ const year = new Date().getFullYear();
               target="_blank"
               rel="noopener"
               aria-label={s.label}
-              class="inline-flex size-10 items-center justify-center rounded-lg border border-outline-variant text-on-surface-variant transition-all duration-300 hover:scale-110 hover:border-vibrant-steel-blue hover:text-vibrant-steel-blue"
+              class="flex size-9 items-center justify-center rounded-lg text-on-surface-variant transition-colors hover:text-vibrant-steel-blue"
             >
               <Icon name={s.icon} class="size-5" />
             </a>
           ))
         }
+        <span class="h-4 w-px bg-outline-variant" aria-hidden="true"></span>
+        <div class="flex items-center gap-3 text-label">
+          <span class="font-bold text-primary">TR</span>
+          <span class="cursor-pointer text-outline hover:text-primary">EN</span>
+        </div>
       </div>
-
-      <p class="text-label text-outline">
-        © {year} {company.legalName}. {""}Tüm hakları saklıdır.
-      </p>
     </div>
 
-    <div>
-      <p class="mb-6 text-label font-bold uppercase tracking-widest text-primary">
-        İletişim
-      </p>
-      <p class="mb-2 text-on-surface-variant">{company.address}</p>
-      <p class="mb-2 text-on-surface-variant">{company.phone}</p>
-      <a
-        href={`mailto:${company.email}`}
-        class="text-on-surface-variant transition-colors hover:text-vibrant-steel-blue"
-      >
-        {company.email}
-      </a>
-    </div>
-
-    <div>
-      <p class="mb-6 text-label font-bold uppercase tracking-widest text-primary">
-        Menü
-      </p>
-      <ul class="space-y-3 text-on-surface-variant">
-        {
-          nav.map((item) => (
-            <li>
-              <a
-                href={item.href}
-                class="transition-colors hover:text-vibrant-steel-blue"
-              >
-                {item.label}
-              </a>
-            </li>
-          ))
-        }
-      </ul>
-    </div>
-  </div>
-
-  <div
-    class="flex flex-col items-center justify-between gap-4 border-t border-outline-variant pt-8 md:flex-row"
-  >
-    <div class="flex gap-6">
-      <a href="#" class="text-label uppercase tracking-widest text-on-surface-variant hover:text-primary">
-        Gizlilik
-      </a>
-      <a href="#" class="text-label uppercase tracking-widest text-on-surface-variant hover:text-primary">
-        Künye
-      </a>
-    </div>
-    <div class="flex items-center gap-4">
-      <span class="text-label font-bold text-primary">TR</span>
-      <span class="h-3 w-px bg-outline-variant"></span>
-      <span class="cursor-pointer text-label text-outline hover:text-primary">EN</span>
+    <div
+      class="mt-8 flex flex-col-reverse items-center justify-between gap-3 border-t border-outline-variant pt-6 text-center text-label text-outline md:flex-row md:text-left"
+    >
+      <p>© {year} {company.legalName}. Tüm hakları saklıdır.</p>
+      <p>{company.address} · {company.phone}</p>
     </div>
   </div>
 </footer>
