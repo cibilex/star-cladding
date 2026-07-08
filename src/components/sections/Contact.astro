@@ -29,6 +29,24 @@ const infoItems: { icon: IconName; label: string; value: string; href?: string }
 ---
 
 <section id={sectionId} class="relative overflow-hidden bg-surface py-section-gap">
+  <!--
+    Netlify Forms build-time detector. Never shown or submitted by a real user —
+    Netlify's build bot scans built static HTML for a data-netlify form to learn
+    its name + schema. Actual submission happens via fetch() from the ContactForm
+    React island (invisible to the build-time scanner). Every field name
+    ContactForm.tsx can submit must be mirrored here or Netlify drops it silently.
+  -->
+  <form name="contact" data-netlify="true" netlify-honeypot="bot-field" hidden>
+    <input type="hidden" name="form-name" value="contact" />
+    <p hidden>
+      <label>Bu alanı boş bırakın: <input name="bot-field" /></label>
+    </p>
+    <input type="text" name="name" />
+    <input type="tel" name="phone" />
+    <input type="email" name="email" />
+    <textarea name="message"></textarea>
+  </form>
+
   <!-- ambient background: masked grid + soft glows -->
   <div class="pointer-events-none absolute inset-0" aria-hidden="true">
     <div
