@@ -1,0 +1,96 @@
+---
+import { Image } from "astro:assets";
+import { company } from "@/data/site";
+import logo from "@/assets/images/logo.png";
+
+/**
+ * Single source of truth for the icon + "Star / Alüminyum" wordmark lockup
+ * — used by Header and Footer so both render byte-identical markup/styling.
+ * Color comes from .logo-text/.logo-text-sub in global.css: a navy default,
+ * overridden by #main-nav's dark-hero / on-light / scrolled states when the
+ * component happens to render inside the header.
+ */
+interface Props {
+  /** "lg" for the fixed header, "sm" for the footer. */
+  size?: "sm" | "lg";
+  /** Header hides the wordmark below md to leave room for the mobile menu. */
+  hideTextOnMobile?: boolean;
+}
+const { size = "lg", hideTextOnMobile = false } = Astro.props;
+
+const sizes = {
+  sm: {
+    icon: "h-8 w-8",
+    title: "text-sm leading-4",
+    sub: "text-[0.5rem]",
+  },
+  lg: {
+    icon: "h-14 w-14",
+    title: "text-xl leading-5",
+    sub: "text-[0.6rem]",
+  },
+} as const;
+const s = sizes[size];
+---
+
+<a
+  href="/"
+  class:list={["logo-link group flex shrink-0 items-center"]}
+  aria-label={company.name}
+>
+  <Image
+    src={logo}
+    alt="Star Alüminyum logo"
+    width={128}
+    height={128}
+    class:list={[
+      "logo-mark object-contain transition-transform duration-500 ease-out group-hover:rotate-[8deg] group-hover:scale-110",
+      s.icon,
+    ]}
+  />
+  <span
+    class:list={[
+      "flex-col font-display leading-none -translate-x-1",
+      hideTextOnMobile ? "hidden md:flex" : "flex",
+    ]}
+  >
+    <span
+      class:list={[
+        "logo-text font-extrabold uppercase tracking-tight",
+        s.title,
+      ]}
+    >
+      Star
+    </span>
+    <span
+      class:list={[
+        "logo-text-sub mt-0.5 font-semibold uppercase tracking-[0.25em]",
+        s.sub,
+      ]}
+    >
+      Alüminyum
+    </span>
+  </span>
+</a>
+
+<script>
+  const reduceMotion = window.matchMedia(
+    "(prefers-reduced-motion: reduce)",
+  ).matches;
+
+  document.querySelectorAll(".logo-link").forEach((link) => {
+    const mark = link.querySelector(".logo-mark");
+    link.addEventListener("click", (e) => {
+      if (reduceMotion || !mark) return;
+
+      mark.classList.remove("logo-spin");
+      // force reflow so the animation restarts on repeated clicks
+      void mark.offsetWidth;
+      mark.classList.add("logo-spin");
+
+      if (window.location.pathname === "/") {
+        e.preventDefault();
+      }
+    });
+  });
+</script>
