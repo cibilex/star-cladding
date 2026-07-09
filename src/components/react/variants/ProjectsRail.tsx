@@ -141,7 +141,7 @@ export default function ProjectsRail({ projects }: Props) {
               whileInView={reduce ? undefined : { opacity: 1, y: 0 }}
               viewport={{ once: true, amount: 0.25 }}
               transition={{ duration: 0.7, delay: i * 0.08, ease: "easeOut" }}
-              className="group relative h-[70svh] max-h-[620px] min-h-[440px] w-[85vw] shrink-0 select-none sm:w-[420px] lg:w-[460px]"
+              className="group relative h-[52svh] max-h-[460px] min-h-[340px] w-[85vw] shrink-0 select-none sm:h-[70svh] sm:max-h-[620px] sm:min-h-[440px] sm:w-[420px] lg:w-[460px]"
             >
               {/* offset outline frame behind the photo; eases toward it on hover */}
               <div
