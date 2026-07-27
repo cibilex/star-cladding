@@ -1,0 +1,197 @@
+---
+import Layout from "@/layouts/Layout.astro";
+import Header from "@/components/sections/Header.astro";
+import Footer from "@/components/sections/Footer.astro";
+import Contact from "@/components/sections/Contact.astro";
+import PageHero from "@/components/PageHero.astro";
+import Icon from "@/components/Icon.astro";
+import { company, serviceAreas, services, stats } from "@/data/site";
+import type { IconName } from "@/components/icon-registry";
+
+/**
+ * About page. Exists for E-E-A-T: a named owner, a real address, a stated
+ * history and a scope of work are the signals Google uses to tell a genuine
+ * local contractor from a thin lead-gen shell.
+ */
+const origin = (Astro.site ?? new URL(Astro.url.origin)).href.replace(/\/$/, "");
+
+const breadcrumbs = [{ name: "Ana Sayfa", url: "/" }, { name: "Hakkımızda" }];
+
+const schema = [
+  {
+    "@type": "AboutPage",
+    "@id": `${origin}/hakkimizda/#aboutpage`,
+    name: `${company.legalName} Hakkında`,
+    mainEntity: { "@id": `${origin}/#organization` },
+  },
+];
+
+const values: { icon: IconName; title: string; body: string }[] = [
+  {
+    icon: "shield-check",
+    title: "Yönetmeliğe uygun uygulama",
+    body: "Korkuluk yüksekliğinden yangın sınıfı panel seçimine kadar her detayı yürürlükteki yapı yönetmeliklerine göre uyguluyoruz. Kısa yoldan gitmiyoruz.",
+  },
+  {
+    icon: "check-circle",
+    title: "Yazılı teklif, sabit fiyat",
+    body: "Keşif sonrası verdiğimiz teklifte malzeme, işçilik ve süre yazılıdır. İş bittiğinde sürpriz kalem çıkmaz.",
+  },
+  {
+    icon: "clock",
+    title: "Söz verdiğimiz tarihte teslim",
+    body: "Ölçü, atölye üretimi ve montaj takvimini sözleşmede belirtiyoruz. Gecikme olacaksa önceden haber veriyoruz.",
+  },
+  {
+    icon: "layers",
+    title: "Kendi atölyemizde üretim",
+    body: "Kesim, büküm ve kaynak işleri Süleymanpaşa'daki kendi atölyemizde yapılır. Ara yükleniciye devretmediğimiz için kaliteyi biz kontrol ediyoruz.",
+  },
+];
+---
+
+<Layout
+  title={`Hakkımızda | ${serviceAreas.primary} Alüminyum Ustası | ${company.legalName}`}
+  description={`${company.foundingYear}'ten bu yana ${serviceAreas.primary}'da cephe giydirme, cam balkon ve alüminyum doğrama üretimi. Kurucu ${company.owner}. Kendi atölyemizde üretim, yazılı teklif.`}
+  breadcrumbs={breadcrumbs}
+  schema={schema}
+>
+  <Header />
+  <main>
+    <PageHero
+      kicker="Biz Kimiz"
+      title="Hakkımızda"
+      subtitle={`${serviceAreas.primary} ${company.addressLocality}'da kendi atölyesinde üreten, montajını kendi ekibiyle yapan bir alüminyum ve cephe firması.`}
+      crumbs={[{ label: "Ana Sayfa", href: "/" }, { label: "Hakkımızda" }]}
+    />
+
+    <section
+      class="px-margin-mobile py-section-gap-mobile md:px-margin-desktop md:py-section-gap"
+    >
+      <div class="mx-auto grid max-w-7xl grid-cols-1 gap-16 lg:grid-cols-12">
+        <div class="lg:col-span-7">
+          <h2 class="reveal mb-6 text-headline text-primary">
+            {company.legalName} kimdir?
+          </h2>
+          <div
+            class="reveal space-y-5 text-body-lg leading-relaxed text-on-surface-variant"
+          >
+            <p>
+              {company.legalName}, {company.foundingYear} yılından bu yana
+              {" "}{serviceAreas.primary} {company.addressLocality}'da alüminyum
+              doğrama, cam cephe ve cephe giydirme işleri yapıyor. Kurucumuz
+              {" "}<strong class="text-primary">{company.owner}</strong>, sahada
+              yirmi yılı aşkın süredir bizzat çalışan bir usta; firma da bu
+              yüzden ofisten değil, atölyeden yönetiliyor.
+            </p>
+            <p>
+              Kesim, büküm ve kaynak işlerini {company.address} adresindeki
+              kendi atölyemizde yapıyoruz. Montaja giden ekip, üretimi yapan
+              ekiple aynı. Bu, işi ara yükleniciye devreden firmalara göre daha
+              yavaş büyümek demek — ama teslim ettiğimiz her cephenin arkasında
+              durabilmek de bunu gerektiriyor.
+            </p>
+            <p>
+              Konut balkonundan {services.length} kalem hizmetimizin tamamına
+              kadar; apartman cephesi yenileme, iş merkezi giydirme cephe, villa
+              korkuluğu ve ofis bölme işleri alıyoruz. Keşif ve fiyat teklifi
+              ücretsizdir ve mesafe farkı almıyoruz.
+            </p>
+          </div>
+
+          <h2 class="reveal mb-8 mt-16 text-headline text-primary">
+            Çalışma prensiplerimiz
+          </h2>
+          <div class="grid grid-cols-1 gap-gutter sm:grid-cols-2">
+            {
+              values.map((v, i) => (
+                <div
+                  class="reveal rounded-lg border border-outline-variant bg-white p-6"
+                  style={`transition-delay: ${i * 100}ms;`}
+                >
+                  <span class="mb-4 flex size-11 items-center justify-center rounded-full bg-vibrant-steel-blue/10 text-vibrant-steel-blue">
+                    <Icon name={v.icon} class="size-5" />
+                  </span>
+                  <h3 class="mb-2 font-bold text-primary">{v.title}</h3>
+                  <p class="text-on-surface-variant">{v.body}</p>
+                </div>
+              ))
+            }
+          </div>
+        </div>
+
+        <aside class="lg:col-span-5">
+          <div class="reveal sticky top-28 space-y-8">
+            <div class="rounded-lg bg-primary p-8 text-primary-foreground">
+              <p
+                class="mb-6 text-label font-semibold uppercase tracking-widest text-vibrant-steel-blue"
+              >
+                Rakamlarla
+              </p>
+              <dl class="divide-y divide-white/10">
+                {
+                  stats.map((s) => (
+                    <div class="flex items-baseline justify-between py-4">
+                      <dt class="text-white/70">{s.label}</dt>
+                      <dd class="font-display text-2xl font-extrabold">
+                        {s.value}
+                      </dd>
+                    </div>
+                  ))
+                }
+              </dl>
+            </div>
+
+            <div class="rounded-lg border border-outline-variant bg-surface p-8">
+              <p
+                class="mb-4 text-label font-semibold uppercase tracking-widest text-vibrant-steel-blue"
+              >
+                Künye
+              </p>
+              <dl class="space-y-3 text-on-surface-variant">
+                <div>
+                  <dt class="text-label uppercase tracking-widest">Firma</dt>
+                  <dd class="font-semibold text-primary">
+                    {company.legalName}
+                  </dd>
+                </div>
+                <div>
+                  <dt class="text-label uppercase tracking-widest">
+                    {company.ownerRole}
+                  </dt>
+                  <dd class="font-semibold text-primary">{company.owner}</dd>
+                </div>
+                <div>
+                  <dt class="text-label uppercase tracking-widest">Adres</dt>
+                  <dd class="font-semibold text-primary">
+                    {company.addressLong}
+                  </dd>
+                </div>
+                <div>
+                  <dt class="text-label uppercase tracking-widest">Telefon</dt>
+                  <dd>
+                    <a
+                      href={company.phoneHref}
+                      class="font-semibold text-primary transition-colors hover:text-vibrant-steel-blue"
+                    >
+                      {company.phone}
+                    </a>
+                  </dd>
+                </div>
+                <div>
+                  <dt class="text-label uppercase tracking-widest">
+                    Çalışma Saatleri
+                  </dt>
+                  <dd class="font-semibold text-primary">{company.hours}</dd>
+                </div>
+              </dl>
+            </div>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <Contact />
+  </main>
+  <Footer />
+</Layout>

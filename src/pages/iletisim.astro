@@ -1,0 +1,189 @@
+---
+import Layout from "@/layouts/Layout.astro";
+import Header from "@/components/sections/Header.astro";
+import Footer from "@/components/sections/Footer.astro";
+import Contact from "@/components/sections/Contact.astro";
+import PageHero from "@/components/PageHero.astro";
+import Icon from "@/components/Icon.astro";
+import { company, serviceAreas } from "@/data/site";
+import type { IconName } from "@/components/icon-registry";
+
+/**
+ * Dedicated contact URL. The homepage #iletisim anchor is not indexable on its
+ * own — this page is, so it can rank for "yılmaz alüminyum iletişim/telefon/
+ * adres" and act as the NAP citation target we point directory listings at.
+ */
+const origin = (Astro.site ?? new URL(Astro.url.origin)).href.replace(/\/$/, "");
+
+const breadcrumbs = [{ name: "Ana Sayfa", url: "/" }, { name: "İletişim" }];
+
+const schema = [
+  {
+    "@type": "ContactPage",
+    "@id": `${origin}/iletisim/#contactpage`,
+    name: `${company.legalName} İletişim`,
+    mainEntity: { "@id": `${origin}/#organization` },
+  },
+];
+
+const details: {
+  icon: IconName;
+  label: string;
+  value: string;
+  href?: string;
+  external?: boolean;
+}[] = [
+  {
+    icon: "phone",
+    label: "Telefon",
+    value: company.phone,
+    href: company.phoneHref,
+  },
+  {
+    icon: "message-circle",
+    label: "WhatsApp",
+    value: "Hemen mesaj gönderin",
+    href: company.whatsapp,
+    external: true,
+  },
+  {
+    icon: "mail",
+    label: "E-posta",
+    value: company.email,
+    href: `mailto:${company.email}`,
+  },
+  {
+    icon: "map-pin",
+    label: "Adres",
+    value: company.addressLong,
+    href: company.mapsLink,
+    external: true,
+  },
+  { icon: "clock", label: "Çalışma Saatleri", value: company.hours },
+];
+---
+
+<Layout
+  title={`İletişim | ${serviceAreas.primary} Alüminyum | ${company.legalName}`}
+  description={`${company.legalName} iletişim: ${company.phone}. ${company.address}. Cephe, cam balkon ve doğrama işleriniz için ücretsiz keşif talep edin.`}
+  breadcrumbs={breadcrumbs}
+  schema={schema}
+>
+  <Header />
+  <main>
+    <PageHero
+      kicker="Bize Ulaşın"
+      title="İletişim"
+      subtitle={`${serviceAreas.primary} merkezli atölyemizden Trakya genelinde hizmet veriyoruz. Keşif ve fiyat teklifi ücretsizdir.`}
+      crumbs={[{ label: "Ana Sayfa", href: "/" }, { label: "İletişim" }]}
+    />
+
+    <section
+      class="px-margin-mobile py-section-gap-mobile md:px-margin-desktop md:py-section-gap"
+    >
+      <div class="mx-auto grid max-w-7xl grid-cols-1 gap-16 lg:grid-cols-12">
+        <div class="lg:col-span-7">
+          <h2 class="reveal mb-8 text-headline text-primary">
+            {company.legalName} — {company.addressLocality}, {
+              company.addressRegion
+            }
+          </h2>
+
+          <dl
+            class="divide-y divide-outline-variant border-y border-outline-variant"
+          >
+            {
+              details.map((d, i) => (
+                <div
+                  class="reveal flex items-start gap-5 py-6"
+                  style={`transition-delay: ${i * 80}ms;`}
+                >
+                  <span class="flex size-11 shrink-0 items-center justify-center rounded-full bg-surface-container text-vibrant-steel-blue">
+                    <Icon name={d.icon} class="size-5" />
+                  </span>
+                  <div class="min-w-0 flex-1">
+                    <dt class="mb-1 text-label uppercase tracking-widest text-on-surface-variant">
+                      {d.label}
+                    </dt>
+                    <dd class="font-semibold text-primary">
+                      {d.href ? (
+                        <a
+                          href={d.href}
+                          class="transition-colors hover:text-vibrant-steel-blue"
+                          {...(d.external
+                            ? { target: "_blank", rel: "noopener" }
+                            : {})}
+                        >
+                          {d.value}
+                        </a>
+                      ) : (
+                        d.value
+                      )}
+                    </dd>
+                  </div>
+                </div>
+              ))
+            }
+          </dl>
+
+          <h2 class="reveal mb-6 mt-16 text-headline text-primary">
+            Hizmet Verdiğimiz Bölgeler
+          </h2>
+          <p class="reveal mb-6 text-on-surface-variant">
+            Atölyemiz {company.addressLocality}'da; ekiplerimiz {
+              serviceAreas.primary
+            } ilinin tüm ilçelerine ve komşu illere gidiyor. Keşif için mesafe farkı almıyoruz.
+          </p>
+          <ul class="reveal flex flex-wrap gap-2">
+            {
+              [...serviceAreas.districts, ...serviceAreas.cities.slice(1)].map(
+                (area) => (
+                  <li class="rounded-full border border-outline-variant bg-surface px-4 py-2 text-label font-semibold uppercase tracking-widest text-on-surface-variant">
+                    {area}
+                  </li>
+                ),
+              )
+            }
+          </ul>
+        </div>
+
+        <aside class="lg:col-span-5">
+          <div
+            class="reveal sticky top-28 overflow-hidden rounded-lg border border-outline-variant bg-surface"
+          >
+            <iframe
+              src={company.mapsEmbed}
+              title={`${company.legalName} konumu — ${company.address}`}
+              width="100%"
+              height="380"
+              style="border:0;"
+              loading="lazy"
+              referrerpolicy="no-referrer-when-downgrade"></iframe>
+            <div class="p-8">
+              <p class="mb-2 text-label font-semibold uppercase tracking-widest text-vibrant-steel-blue">
+                Ücretsiz Keşif
+              </p>
+              <h3 class="mb-4 text-headline text-primary">
+                Projenizi konuşalım
+              </h3>
+              <p class="mb-8 text-on-surface-variant">
+                Ölçü, malzeme ve süre planını netleştirmek için yerinde keşif
+                yapıyoruz. Aynı gün dönüş sağlıyoruz.
+              </p>
+              <a
+                href={company.phoneHref}
+                class="shimmer-btn flex w-full items-center justify-center gap-2 rounded-sm bg-vibrant-steel-blue px-8 py-4 text-label font-semibold uppercase tracking-widest text-white shadow-xl transition-all hover:-translate-y-0.5"
+              >
+                <Icon name="phone" class="size-4" />
+                {company.phone}
+              </a>
+            </div>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <Contact />
+  </main>
+  <Footer />
+</Layout>
