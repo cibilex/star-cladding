@@ -7,10 +7,11 @@ import type { IconName } from "@/components/icon-registry";
 export const company = {
   name: "YILMAZ ALÜMİNYUM",
   legalName: "Yılmaz Alüminyum",
-  // TODO(launch): domain not registered yet. When it is, change it in BOTH
-  // places — `site` in astro.config.mjs (drives canonical, sitemap, robots.txt)
-  // and here. They must match or canonicals will point at the wrong host.
-  domain: "https://staraluminyum.com",
+  // Punycode of the IDN "yılmazalüminyum.com" — must stay identical to `site`
+  // in astro.config.mjs, which drives canonicals, the sitemap and robots.txt.
+  domain: "https://xn--ylmazalminyum-2ob20f.com",
+  /** Unicode form, for display in copy where a human reads it. */
+  domainDisplay: "yılmazalüminyum.com",
   email: "yilmaz-aluminyum@outlook.com.tr",
   phone: "+90 543 648 22 85",
   phoneHref: "tel:+905436482285",
