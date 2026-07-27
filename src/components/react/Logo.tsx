@@ -1,5 +1,5 @@
 import { company } from "@/data/site";
-import logo from "@/assets/images/logo.png";
+import logo from "@/assets/images/logo-yilmaz.png";
 import {
   LOGO_ALT,
   LOGO_INTRINSIC,

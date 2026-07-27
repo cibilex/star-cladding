@@ -43,6 +43,6 @@ export const [LOGO_WORDMARK_TOP, LOGO_WORDMARK_BOTTOM] =
 
 export const LOGO_ALT = `${company.legalName} logo`;
 
-/** Intrinsic pixel size of src/assets/images/logo.png — set width/height from
+/** Intrinsic pixel size of src/assets/images/logo-yilmaz.png — set width/height from
  *  this so the badge never causes layout shift while decoding. */
 export const LOGO_INTRINSIC = 500;
