@@ -15,8 +15,11 @@ export type LogoSize = "sm" | "lg";
 /** The mark is a circular badge whose interior is transparent (background was
  *  removed), so it MUST sit on its own white disc or the dark artwork
  *  disappears against the navy header and the navy mobile-menu overlay. */
+/* No hover transform: the badge is a dense circular lockup and tilting it read
+   as a glitch rather than an affordance. transition-transform stays for the
+   click spin (.logo-spin in global.css). */
 export const LOGO_MARK_BASE =
-  "logo-mark shrink-0 rounded-full bg-white object-contain transition-transform duration-500 ease-out group-hover:rotate-[8deg] group-hover:scale-110";
+  "logo-mark shrink-0 rounded-full bg-white object-contain transition-transform duration-500 ease-out";
 
 export const LOGO_SIZES: Record<
   LogoSize,
