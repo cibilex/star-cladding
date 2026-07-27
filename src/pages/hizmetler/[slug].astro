@@ -5,8 +5,9 @@ import Footer from "@/components/sections/Footer.astro";
 import Contact from "@/components/sections/Contact.astro";
 import ServiceHero from "@/components/ServiceHero.astro";
 import RelatedProjects from "@/components/RelatedProjects.astro";
+import Faq from "@/components/Faq.astro";
 import Icon from "@/components/Icon.astro";
-import { company, services } from "@/data/site";
+import { company, serviceAreas, services } from "@/data/site";
 
 export function getStaticPaths() {
   return services.map((service) => ({
@@ -17,11 +18,61 @@ export function getStaticPaths() {
 
 const { service } = Astro.props;
 const others = services.filter((s) => s.slug !== service.slug);
+
+const origin = (Astro.site ?? new URL(Astro.url.origin)).href.replace(/\/$/, "");
+const pageUrl = `${origin}/hizmetler/${service.slug}/`;
+
+const breadcrumbs = [
+  { name: "Ana Sayfa", url: "/" },
+  { name: "Hizmetler", url: "/hizmetler" },
+  { name: service.title },
+];
+
+/**
+ * Service node links back to the org via provider @id, so Google reads the ten
+ * service pages as one business's offer catalogue rather than ten strangers.
+ */
+const schema: Record<string, unknown>[] = [
+  {
+    "@type": "Service",
+    "@id": `${pageUrl}#service`,
+    name: service.title,
+    serviceType: service.title,
+    description: service.description,
+    provider: { "@id": `${origin}/#organization` },
+    areaServed: [
+      { "@type": "AdministrativeArea", name: `${serviceAreas.primary} ili` },
+      ...serviceAreas.districts.map((d) => ({ "@type": "City", name: d })),
+    ],
+    hasOfferCatalog: {
+      "@type": "OfferCatalog",
+      name: `${service.title} kapsamı`,
+      itemListElement: service.features.map((f) => ({
+        "@type": "Offer",
+        itemOffered: { "@type": "Service", name: f },
+      })),
+    },
+  },
+];
+
+if (service.faqs.length > 0) {
+  schema.push({
+    "@type": "FAQPage",
+    "@id": `${pageUrl}#faq`,
+    mainEntity: service.faqs.map((f) => ({
+      "@type": "Question",
+      name: f.q,
+      acceptedAnswer: { "@type": "Answer", text: f.a },
+    })),
+  });
+}
 ---
 
 <Layout
-  title={`${service.title} | STAR ALÜMİNYUM`}
-  description={service.summary}
+  title={service.seoTitle}
+  description={service.seoDescription}
+  breadcrumbs={breadcrumbs}
+  schema={schema}
 >
   <Header />
   <main>
@@ -110,6 +161,11 @@ const others = services.filter((s) => s.slug !== service.slug);
     </section>
 
     <RelatedProjects serviceSlug={service.slug} serviceTitle={service.title} />
+
+    <Faq
+      items={service.faqs}
+      heading={`${service.title} hakkında sık sorulanlar`}
+    />
 
     <!-- other services: compact rows -->
     <section class="px-margin-mobile py-24 md:px-margin-desktop">

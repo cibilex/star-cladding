@@ -1,0 +1,77 @@
+---
+import Icon from "@/components/Icon.astro";
+import type { Faq } from "@/data/site";
+
+/**
+ * Static FAQ accordion — native <details>/<summary>, no island, 0 JS.
+ * Answers are in the HTML even while collapsed, so Google indexes all of them
+ * (this is what makes the FAQPage JSON-LD on the parent page legitimate).
+ */
+interface Props {
+  items: Faq[];
+  heading?: string;
+  kicker?: string;
+}
+
+const {
+  items,
+  heading = "Sık Sorulan Sorular",
+  kicker = "Merak Edilenler",
+} = Astro.props;
+---
+
+{
+  items.length > 0 && (
+    <section class="bg-surface px-margin-mobile py-section-gap-mobile md:px-margin-desktop md:py-section-gap">
+      <div class="mx-auto max-w-4xl">
+        <p class="reveal mb-2 text-label font-semibold uppercase tracking-widest text-vibrant-steel-blue">
+          {kicker}
+        </p>
+        <h2
+          class="reveal mb-10 text-headline text-primary"
+          style="transition-delay: 80ms;"
+        >
+          {heading}
+        </h2>
+
+        <div class="divide-y divide-outline-variant border-y border-outline-variant">
+          {items.map((item, i) => (
+            <details
+              class="faq-item group reveal"
+              style={`transition-delay: ${i * 80}ms;`}
+            >
+              <summary class="flex cursor-pointer list-none items-start gap-4 py-6 text-left font-bold text-primary transition-colors hover:text-vibrant-steel-blue">
+                <span class="flex-1">{item.q}</span>
+                <Icon
+                  name="arrow-right"
+                  class="faq-chevron mt-1 size-5 shrink-0 text-aluminum-silver transition-transform duration-300"
+                />
+              </summary>
+              <p class="pb-6 pr-9 leading-relaxed text-on-surface-variant">
+                {item.a}
+              </p>
+            </details>
+          ))}
+        </div>
+      </div>
+    </section>
+  )
+}
+
+<style>
+  /* Kill the native disclosure triangle across engines — we draw our own. */
+  .faq-item summary::-webkit-details-marker {
+    display: none;
+  }
+  .faq-item summary::marker {
+    content: "";
+  }
+  .faq-item[open] .faq-chevron {
+    transform: rotate(90deg);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .faq-chevron {
+      transition: none;
+    }
+  }
+</style>

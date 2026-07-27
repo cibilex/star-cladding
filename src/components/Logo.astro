@@ -2,73 +2,65 @@
 import { Image } from "astro:assets";
 import { company } from "@/data/site";
 import logo from "@/assets/images/logo.png";
+import {
+  LOGO_ALT,
+  LOGO_MARK_BASE,
+  LOGO_SIZES,
+  LOGO_WORDMARK_BOTTOM,
+  LOGO_WORDMARK_TOP,
+  type LogoSize,
+} from "@/components/logo-config";
 
 /**
- * Single source of truth for the icon + "Star / Alüminyum" wordmark lockup
- * — used by Header and Footer so both render byte-identical markup/styling.
- * Color comes from .logo-text/.logo-text-sub in global.css: a navy default,
- * overridden by #main-nav's dark-hero / on-light / scrolled states when the
- * component happens to render inside the header.
+ * Logo lockup for static sections (Header, Footer). Ships 0 JS apart from the
+ * shared click-spin script at the bottom.
+ *
+ * Every dimension, class and string comes from logo-config.ts, which the React
+ * twin (components/react/Logo.tsx) also imports — see that file for why the
+ * markup exists twice.
+ *
+ * Color of the wordmark is NOT set here: .logo-text / .logo-text-sub in
+ * global.css own it, so the header's dark-hero / on-light / is-scrolled states
+ * can recolor it the same way they recolor .header-link.
  */
 interface Props {
   /** "lg" for the fixed header, "sm" for the footer. */
-  size?: "sm" | "lg";
+  size?: LogoSize;
   /** Header hides the wordmark below md to leave room for the mobile menu. */
   hideTextOnMobile?: boolean;
 }
 const { size = "lg", hideTextOnMobile = false } = Astro.props;
-
-const sizes = {
-  sm: {
-    icon: "h-8 w-8",
-    title: "text-sm leading-4",
-    sub: "text-[0.5rem]",
-  },
-  lg: {
-    icon: "h-14 w-14",
-    title: "text-xl leading-5",
-    sub: "text-[0.6rem]",
-  },
-} as const;
-const s = sizes[size];
+const s = LOGO_SIZES[size];
 ---
 
 <a
   href="/"
-  class:list={["logo-link group flex shrink-0 items-center"]}
-  aria-label={company.name}
+  class="logo-link group flex shrink-0 items-center"
+  aria-label={company.legalName}
 >
   <Image
     src={logo}
-    alt="Star Alüminyum logo"
+    alt={LOGO_ALT}
     width={128}
     height={128}
-    class:list={[
-      "logo-mark object-contain transition-transform duration-500 ease-out group-hover:rotate-[8deg] group-hover:scale-110",
-      s.icon,
-    ]}
+    class:list={[LOGO_MARK_BASE, s.mark]}
   />
   <span
     class:list={[
-      "flex-col font-display leading-none -translate-x-1",
+      s.gap,
+      "flex-col font-display leading-none",
       hideTextOnMobile ? "hidden md:flex" : "flex",
     ]}
   >
     <span
-      class:list={[
-        "logo-text font-extrabold uppercase tracking-tight",
-        s.title,
-      ]}
+      class:list={["logo-text font-extrabold uppercase tracking-tight", s.title]}
     >
-      Star
+      {LOGO_WORDMARK_TOP}
     </span>
     <span
-      class:list={[
-        "logo-text-sub mt-0.5 font-semibold uppercase tracking-[0.25em]",
-        s.sub,
-      ]}
+      class:list={["logo-text-sub mt-0.5 font-semibold uppercase", s.sub]}
     >
-      Alüminyum
+      {LOGO_WORDMARK_BOTTOM}
     </span>
   </span>
 </a>

@@ -2,7 +2,7 @@
 
 /*
   Design system ported from the chosen Stitch theme:
-  "Star Alüminyum - Hero (Vibrant Blue)".
+  "Yılmaz Alüminyum - Hero (Vibrant Blue)".
   Fonts: Manrope (display/headings), Inter (body). Accent: vibrant steel blue.
 */
 
@@ -317,7 +317,10 @@
 .logo-link:hover .logo-text-sub {
   opacity: 0.9;
 }
-#main-nav .logo-text {
+#main-nav .logo-text,
+/* .logo-text-sub only sets opacity, so over the navy header it inherited a
+   dark color and vanished. It needs the same white the wordmark gets. */
+#main-nav .logo-text-sub {
   color: #fff;
 }
 #main-nav .logo-link:hover .logo-text {
@@ -327,6 +330,7 @@
   color: var(--primary);
 }
 #main-nav.on-light .logo-text-sub {
+  color: var(--primary);
   opacity: 0.55;
 }
 #main-nav.on-light .logo-link:hover .logo-text {
@@ -365,6 +369,18 @@
 #main-nav.is-scrolled .header-link:hover {
   color: var(--primary);
   opacity: 1;
+}
+/* The wordmark was missing from the .is-scrolled recolor above, so it kept
+   #main-nav's white and went invisible against the frosted light header. */
+#main-nav.is-scrolled .logo-text {
+  color: var(--primary);
+}
+#main-nav.is-scrolled .logo-text-sub {
+  color: var(--primary);
+  opacity: 0.55;
+}
+#main-nav.is-scrolled .logo-link:hover .logo-text {
+  color: var(--vibrant-steel-blue);
 }
 
 /* contact topbar: slim navy strip that collapses once scrolled */

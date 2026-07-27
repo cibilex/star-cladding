@@ -8,11 +8,32 @@ import Icon from "@/components/Icon.astro";
 import { Image } from "astro:assets";
 import { projects } from "@/data/site";
 import { resolveImage } from "@/data/images";
+
+const origin = (Astro.site ?? new URL(Astro.url.origin)).href.replace(/\/$/, "");
+
+const breadcrumbs = [{ name: "Ana Sayfa", url: "/" }, { name: "Projeler" }];
+
+const schema = [
+  {
+    "@type": "ItemList",
+    "@id": `${origin}/projeler/#projects`,
+    name: "Yılmaz Alüminyum referans projeleri",
+    numberOfItems: projects.length,
+    itemListElement: projects.map((p, i) => ({
+      "@type": "ListItem",
+      position: i + 1,
+      name: `${p.title}, ${p.location}`,
+      url: `${origin}/projeler/${p.slug}/`,
+    })),
+  },
+];
 ---
 
 <Layout
-  title="Projelerimiz | STAR ALÜMİNYUM"
-  description="Tamamladığımız cam cephe, kompozit panel ve korkuluk projeleri. Star Alüminyum referansları."
+  title="Projelerimiz | Cephe ve Cam Referansları | Yılmaz Alüminyum"
+  description="Tamamladığımız cam cephe, kompozit panel, doğrama ve korkuluk projeleri. Tekirdağ merkezli Yılmaz Alüminyum'un iş merkezi, rezidans ve villa referansları."
+  breadcrumbs={breadcrumbs}
+  schema={schema}
 >
   <Header />
   <main>
@@ -20,7 +41,7 @@ import { resolveImage } from "@/data/images";
       kicker="Referanslarımız"
       title="Projelerimiz"
       subtitle="Tamamladığımız cephe işlerinden bir seçki. Her proje, milimetrik hassasiyetle hayata geçirildi."
-      crumbs={[{ label: "Anasayfa", href: "/" }, { label: "Projeler" }]}
+      crumbs={[{ label: "Ana Sayfa", href: "/" }, { label: "Projeler" }]}
     />
 
     <section class="px-margin-mobile py-section-gap-mobile md:px-margin-desktop md:py-section-gap">

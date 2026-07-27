@@ -23,11 +23,44 @@ const meta = [
   { label: "Konum", value: project.location },
   { label: "Yıl", value: project.year },
 ];
+
+const origin = (Astro.site ?? new URL(Astro.url.origin)).href.replace(/\/$/, "");
+const pageUrl = `${origin}/projeler/${project.slug}/`;
+
+const breadcrumbs = [
+  { name: "Ana Sayfa", url: "/" },
+  { name: "Projeler", url: "/projeler" },
+  { name: project.title },
+];
+
+// CreativeWork (not Article) — this is a completed job, not editorial content.
+// `about` points at the Service pages so the case study transfers relevance
+// to the commercial page we actually want ranking.
+const schema = [
+  {
+    "@type": "CreativeWork",
+    "@id": `${pageUrl}#project`,
+    name: `${project.title}, ${project.location}`,
+    headline: project.title,
+    description: project.description,
+    creator: { "@id": `${origin}/#organization` },
+    dateCreated: project.year,
+    locationCreated: { "@type": "Place", name: project.location },
+    genre: project.category,
+    ...(img ? { image: new URL(img.src, origin).href } : {}),
+    about: project.serviceSlugs.map((slug) => ({
+      "@id": `${origin}/hizmetler/${slug}/#service`,
+    })),
+  },
+];
 ---
 
 <Layout
-  title={`${project.title} | STAR ALÜMİNYUM`}
-  description={project.summary}
+  title={project.seoTitle ?? `${project.title} | YILMAZ ALÜMİNYUM`}
+  description={project.seoDescription ?? project.summary}
+  ogType="article"
+  breadcrumbs={breadcrumbs}
+  schema={schema}
 >
   <Header />
   <main>
@@ -35,7 +68,7 @@ const meta = [
       kicker={project.category}
       title={`${project.title}, ${project.location}`}
       crumbs={[
-        { label: "Anasayfa", href: "/" },
+        { label: "Ana Sayfa", href: "/" },
         { label: "Projeler", href: "/projeler" },
         { label: project.title },
       ]}

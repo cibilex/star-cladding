@@ -6,21 +6,44 @@ import Contact from "@/components/sections/Contact.astro";
 import PageHero from "@/components/PageHero.astro";
 import Icon from "@/components/Icon.astro";
 import { Image } from "astro:assets";
-import { services } from "@/data/site";
+import { serviceAreas, services } from "@/data/site";
 import { resolveImage } from "@/data/images";
+
+const origin = (Astro.site ?? new URL(Astro.url.origin)).href.replace(/\/$/, "");
+
+const breadcrumbs = [{ name: "Ana Sayfa", url: "/" }, { name: "Hizmetler" }];
+
+// ItemList tells Google this is a hub page and gives it the ten child URLs
+// up front, rather than making it discover them by crawling the markup.
+const schema = [
+  {
+    "@type": "ItemList",
+    "@id": `${origin}/hizmetler/#services`,
+    name: "Yılmaz Alüminyum hizmetleri",
+    numberOfItems: services.length,
+    itemListElement: services.map((s, i) => ({
+      "@type": "ListItem",
+      position: i + 1,
+      name: s.title,
+      url: `${origin}/hizmetler/${s.slug}/`,
+    })),
+  },
+];
 ---
 
 <Layout
-  title="Hizmetlerimiz | STAR ALÜMİNYUM"
-  description="Cam ve cephe giydirme, korkuluk ve küpeşte, kompozit panel kaplama — Star Alüminyum'un uzman cephe çözümleri."
+  title="Hizmetlerimiz | Tekirdağ Cephe ve Alüminyum | Yılmaz Alüminyum"
+  description="Tekirdağ'da cam cephe, kompozit panel kaplama, cam balkon, giyotin cam, alüminyum doğrama ve korkuluk sistemleri. 10 hizmet, tek ekip. Ücretsiz keşif."
+  breadcrumbs={breadcrumbs}
+  schema={schema}
 >
   <Header />
   <main>
     <PageHero
       kicker="Uzmanlık Alanlarımız"
       title="Hizmetlerimiz"
-      subtitle="Cam cephe, kompozit panel ve korkuluk sistemlerinde uçtan uca mühendislik ve montaj çözümleri."
-      crumbs={[{ label: "Anasayfa", href: "/" }, { label: "Hizmetler" }]}
+      subtitle={`Cam cephe, kompozit panel ve korkuluk sistemlerinde uçtan uca mühendislik ve montaj çözümleri. ${serviceAreas.primary} merkezli, Trakya genelinde hizmet.`}
+      crumbs={[{ label: "Ana Sayfa", href: "/" }, { label: "Hizmetler" }]}
     />
 
     <section class="px-margin-mobile py-section-gap-mobile md:px-margin-desktop md:py-section-gap">

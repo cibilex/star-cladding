@@ -1,6 +1,7 @@
 ---
 import "@/styles/global.css";
 import SEO from "@/components/SEO.astro";
+import type { Crumb } from "@/components/SEO.astro";
 
 interface Props {
   title?: string;
@@ -8,13 +9,22 @@ interface Props {
   lang?: string;
   /** dev/preview pages: emit robots noindex and skip JSON-LD */
   noindex?: boolean;
+  /** project case studies pass "article"; everything else stays "website" */
+  ogType?: "website" | "article";
+  /** feeds BreadcrumbList JSON-LD — keep in sync with the visible crumbs */
+  breadcrumbs?: Crumb[];
+  /** page-specific JSON-LD nodes (Service, FAQPage, …) merged into the @graph */
+  schema?: Record<string, unknown>[];
 }
 
 const {
-  title = "STAR ALÜMİNYUM | Binanıza Modern Bir Kimlik",
-  description = "Cam cephe, kompozit panel ve korkuluk sistemlerinde uzman alüminyum cephe giydirme çözümleri. İstanbul merkezli, milimetrik hassasiyetle montaj.",
+  title = "Tekirdağ Cephe Giydirme ve Alüminyum Doğrama | Yılmaz Alüminyum",
+  description = "Tekirdağ'da cam cephe, kompozit panel kaplama, cam balkon ve alüminyum doğrama. 20+ yıllık tecrübe, ücretsiz keşif. Süleymanpaşa, Çorlu ve Çerkezköy'e hizmet.",
   lang = "tr",
   noindex = false,
+  ogType = "website",
+  breadcrumbs = [],
+  schema = [],
 } = Astro.props;
 ---
 
@@ -25,7 +35,13 @@ const {
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <!-- Favicons. The generator's favicon.svg was a 3.9 MB base64 raster in an
+         <svg> wrapper, not a real vector — dropped in favour of the ICO/PNG set. -->
+    <link rel="icon" href="/favicon.ico" sizes="32x32" />
+    <link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" sizes="180x180" />
+    <link rel="manifest" href="/site.webmanifest" />
+    <meta name="theme-color" content="#1a283b" />
     <meta name="generator" content={Astro.generator} />
 
     <!-- Fonts: Manrope (display) + Inter (body). Icons are inline lucide SVG. -->
@@ -36,7 +52,14 @@ const {
       rel="stylesheet"
     />
 
-    <SEO title={title} description={description} noindex={noindex} />
+    <SEO
+      title={title}
+      description={description}
+      noindex={noindex}
+      ogType={ogType}
+      breadcrumbs={breadcrumbs}
+      schema={schema}
+    />
   </head>
   <body>
     <slot />

@@ -1,0 +1,93 @@
+---
+import Layout from "@/layouts/Layout.astro";
+import Header from "@/components/sections/Header.astro";
+import Footer from "@/components/sections/Footer.astro";
+import Icon from "@/components/Icon.astro";
+import { company, services } from "@/data/site";
+
+/**
+ * noindex so a soft-404 never enters the index, but still fully linked — a dead
+ * URL should hand the visitor (and a crawler following a stale backlink) a way
+ * back into the service pages instead of a terminal page.
+ */
+const links = [
+  { label: "Ana Sayfa", href: "/" },
+  { label: "Hizmetler", href: "/hizmetler" },
+  { label: "Projeler", href: "/projeler" },
+  { label: "Hakkımızda", href: "/hakkimizda" },
+  { label: "İletişim", href: "/iletisim" },
+];
+---
+
+<Layout
+  title={`Sayfa bulunamadı | ${company.legalName}`}
+  description="Aradığınız sayfa taşınmış veya kaldırılmış olabilir."
+  noindex
+>
+  <Header />
+  <main
+    class="px-margin-mobile pb-section-gap-mobile pt-40 md:px-margin-desktop md:pb-section-gap md:pt-44"
+  >
+    <div class="mx-auto max-w-3xl text-center">
+      <p
+        class="mb-3 text-label font-semibold uppercase tracking-widest text-vibrant-steel-blue"
+      >
+        Hata 404
+      </p>
+      <h1 class="mb-6 text-display-mobile font-extrabold text-primary md:text-display-lg">
+        Bu sayfayı bulamadık
+      </h1>
+      <p class="mb-10 text-body-lg text-on-surface-variant">
+        Aradığınız sayfa taşınmış, adı değişmiş veya hiç var olmamış olabilir.
+        Aşağıdan devam edebilir ya da doğrudan bizi arayabilirsiniz.
+      </p>
+
+      <div class="mb-14 flex flex-wrap justify-center gap-3">
+        {
+          links.map((l) => (
+            <a
+              href={l.href}
+              class="rounded-full border border-outline-variant bg-surface px-5 py-2.5 text-label font-semibold uppercase tracking-widest text-on-surface-variant transition-colors hover:border-vibrant-steel-blue hover:text-vibrant-steel-blue"
+            >
+              {l.label}
+            </a>
+          ))
+        }
+        <a
+          href={company.phoneHref}
+          class="flex items-center gap-2 rounded-full bg-vibrant-steel-blue px-5 py-2.5 text-label font-semibold uppercase tracking-widest text-white transition-transform hover:-translate-y-0.5"
+        >
+          <Icon name="phone" class="size-4" />
+          {company.phone}
+        </a>
+      </div>
+
+      <h2 class="mb-6 text-headline text-primary">Hizmetlerimiz</h2>
+      <div
+        class="divide-y divide-outline-variant border-y border-outline-variant text-left"
+      >
+        {
+          services.map((s) => (
+            <a
+              href={`/hizmetler/${s.slug}`}
+              class="group flex items-center gap-5 py-5"
+            >
+              <Icon
+                name={s.icon}
+                class="size-6 shrink-0 text-graphite transition-colors group-hover:text-vibrant-steel-blue"
+              />
+              <span class="min-w-0 flex-1 font-bold text-primary transition-colors group-hover:text-vibrant-steel-blue">
+                {s.title}
+              </span>
+              <Icon
+                name="arrow-right"
+                class="size-5 shrink-0 text-aluminum-silver transition-all group-hover:translate-x-1 group-hover:text-vibrant-steel-blue"
+              />
+            </a>
+          ))
+        }
+      </div>
+    </div>
+  </main>
+  <Footer />
+</Layout>

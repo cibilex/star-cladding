@@ -3,7 +3,7 @@ import { motion } from "motion/react";
 import { ArrowRight, ChevronRight, Images, Instagram, LayoutGrid, MapPin, Phone, Star } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import { nav, company, social } from "@/data/site";
-import logo from "@/assets/images/logo.png";
+import Logo from "@/components/react/Logo";
 
 /**
  * Mobile navigation drawer — "Circular Reveal / Morphing Hamburger" variant.
@@ -36,8 +36,8 @@ const OPEN_LABEL = "Menüyü kapat";
 const NAV_META: Record<string, { icon: LucideIcon; blurb: string }> = {
   "/hizmetler": { icon: LayoutGrid, blurb: "Cephe ve dış kaplama çözümleri" },
   "/projeler": { icon: Images, blurb: "Tamamlanan uygulamalardan örnekler" },
-  "/#yorumlar": { icon: Star, blurb: "Müşterilerimiz ne diyor" },
-  "/#iletisim": { icon: Phone, blurb: "Bize ulaşın, teklif alın" },
+  "/hakkimizda": { icon: Star, blurb: "Atölyemiz ve çalışma prensiplerimiz" },
+  "/iletisim": { icon: Phone, blurb: "Bize ulaşın, teklif alın" },
 };
 
 /** WhatsApp glyph — lucide has no brand icon; same path used in Header.astro's topbar. */
@@ -159,34 +159,7 @@ export default function MobileMenu() {
           initial="hidden"
           animate={open ? "visible" : "hidden"}
         >
-          <a
-            href="/"
-            aria-label={company.name}
-            onClick={() => setOpen(false)}
-            className="logo-link group flex min-w-0 items-center gap-3"
-          >
-            <img
-              src={logo.src}
-              width={logo.width}
-              height={logo.height}
-              alt="Star Alüminyum logo"
-              className="logo-mark size-11 shrink-0 object-contain drop-shadow-[0_10px_24px_rgba(0,0,0,0.3)] transition-transform duration-500 ease-out group-hover:rotate-[8deg] group-hover:scale-110"
-            />
-            <span className="flex flex-col font-display leading-none">
-              <span
-                className="logo-text text-xl font-extrabold uppercase leading-6 tracking-tight"
-                style={{ color: "var(--background)" }}
-              >
-                Star
-              </span>
-              <span
-                className="logo-text-sub mt-1 text-[0.6rem] font-semibold uppercase tracking-[0.3em]"
-                style={{ color: "var(--background)" }}
-              >
-                Alüminyum
-              </span>
-            </span>
-          </a>
+          <Logo size="lg" tone="onDark" onClick={() => setOpen(false)} />
 
           <span className="flex shrink-0 items-center gap-1.5 rounded-full bg-background/10 px-3 py-1.5 text-background/70">
             <MapPin className="size-3.5 shrink-0" aria-hidden="true" />
@@ -246,7 +219,7 @@ export default function MobileMenu() {
           animate={open ? "visible" : "hidden"}
         >
           <a
-            href="/#iletisim"
+            href="/iletisim"
             tabIndex={open ? 0 : -1}
             onClick={() => setOpen(false)}
             className="group relative flex h-14 items-center justify-center gap-2 overflow-hidden rounded-full bg-gradient-to-r from-vibrant-steel-blue via-steel-blue to-vibrant-steel-blue text-label font-semibold uppercase tracking-widest text-white shadow-[0_16px_40px_-10px_rgba(45,90,136,0.7)] ring-1 ring-inset ring-white/20 transition-transform active:scale-[0.98]"
