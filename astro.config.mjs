@@ -6,8 +6,12 @@ import tailwindcss from "@tailwindcss/vite";
 
 // https://astro.build/config
 export default defineConfig({
-  // TODO: replace with the real production domain (used for sitemap + canonical URLs / SEO)
-  site: "https://staraluminyum.com",
+  // Production domain. The real name is the IDN "yılmazalüminyum.com"; DNS and
+  // URLs require its punycode form, so that is what is stored here. Writing the
+  // Unicode form would work (Node's URL normalises it) but would make the value
+  // differ from every emitted canonical, which is confusing when debugging.
+  // Browsers and Google both display it back to users as yılmazalüminyum.com.
+  site: "https://xn--ylmazalminyum-2ob20f.com",
   i18n: {
     locales: ["tr", "en"],
     defaultLocale: "tr",
